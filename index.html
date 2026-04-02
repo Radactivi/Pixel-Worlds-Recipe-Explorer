@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixel Worlds Recipe Finder</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-2: #1f2937;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #22c55e;
+      --accent-2: #16a34a;
+      --border: #334155;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(180deg, #0b1220 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+    .wrap { max-width: 1500px; margin: 0 auto; padding: 24px; }
+    h1 { margin: 0 0 8px; font-size: 2rem; }
+    .sub { color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+    .grid {
+      display: grid;
+      grid-template-columns: 340px 1fr 280px;
+      gap: 20px;
+      align-items: start;
+    }
+    .card {
+      background: rgba(17, 24, 39, 0.95);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    .sidebar { position: sticky; top: 20px; height: fit-content; }
+    .matched-sidebar { position: sticky; top: 20px; height: fit-content; }
+    .section-title { margin: 0 0 12px; font-size: 1rem; font-weight: 700; }
+    .field { margin-bottom: 14px; }
+    label { display: block; margin-bottom: 6px; font-size: 0.92rem; color: var(--muted); }
+    input[type="text"], select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+    }
+    input[type="file"] { width: 100%; color: var(--muted); }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 14px;
+      background: var(--accent);
+      color: white;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    button.secondary { background: #374151; }
+    button:hover { background: var(--accent-2); }
+    button.secondary:hover { background: #4b5563; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    .pill-link {
+      color: #93c5fd;
+      text-decoration: none;
+      font-weight: 700;
+      margin-left: 2px;
+    }
+    .pill-link:hover {
+      text-decoration: underline;
+    }
+    .result-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      background: rgba(31, 41, 55, 0.65);
+      margin-bottom: 14px;
+    }
+    .result-card.crafted {
+      background: rgba(30, 64, 35, 0.45);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      opacity: 0.82;
+    }
+    .result-card.filtered-out {
+      background:
+        repeating-linear-gradient(
+          -45deg,
+          rgba(148, 163, 184, 0.10) 0px,
+          rgba(148, 163, 184, 0.10) 8px,
+          rgba(15, 23, 42, 0.16) 8px,
+          rgba(15, 23, 42, 0.16) 16px
+        ),
+        rgba(71, 85, 105, 0.30);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      opacity: 0.72;
+    }
+    .result-card.filtered-out.crafted {
+      background:
+        repeating-linear-gradient(
+          -45deg,
+          rgba(148, 163, 184, 0.12) 0px,
+          rgba(148, 163, 184, 0.12) 8px,
+          rgba(15, 23, 42, 0.18) 8px,
+          rgba(15, 23, 42, 0.18) 16px
+        ),
+        rgba(30, 64, 35, 0.38);
+    }
+    .result-title { font-weight: 700; font-size: 1.05rem; }
+    .title-link { color: var(--text); text-decoration: none; }
+    .title-link:hover { text-decoration: underline; color: #bfdbfe; }
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+    .result-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .crafted-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .crafted-toggle input { width: 16px; height: 16px; cursor: pointer; }
+    .ingredients {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .ingredient {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 0.9rem;
+    }
+    .muted { color: var(--muted); }
+    .recipe-meta {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .meta-badge {
+      display: inline-block;
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.95);
+      color: #dbeafe;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+    .meta-badge.used-elsewhere {
+      background: rgba(37, 99, 235, 0.22);
+      border-color: rgba(96, 165, 250, 0.45);
+      color: #bfdbfe;
+    }
+    .meta-badge.not-used-elsewhere {
+      background: rgba(120, 53, 15, 0.22);
+      border-color: rgba(251, 191, 36, 0.4);
+      color: #fde68a;
+    }
+    .highlight {
+      background: rgba(250, 204, 21, 0.28);
+      color: #fef08a;
+      padding: 1px 4px;
+      border-radius: 6px;
+      font-weight: 800;
+    }
+    .empty, .error {
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 8px;
+    }
+    .empty {
+      background: rgba(30, 41, 59, 0.55);
+      border: 1px dashed var(--border);
+      color: var(--muted);
+    }
+    .error {
+      background: rgba(127, 29, 29, 0.35);
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      color: #fecaca;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .stat-box {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .stat-label { color: var(--muted); font-size: 0.82rem; margin-bottom: 4px; }
+    .stat-value { font-size: 1.2rem; font-weight: 800; }
+    .matched-list { display: flex; flex-direction: column; gap: 10px; }
+    .matched-item {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    .matched-item.active {
+      border-color: rgba(96, 165, 250, 0.5);
+      background: rgba(37, 99, 235, 0.16);
+    }
+    .matched-item.crafted {
+      background: rgba(30, 64, 35, 0.45);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+    .matched-item.filtered-out {
+      background:
+        repeating-linear-gradient(
+          -45deg,
+          rgba(148, 163, 184, 0.10) 0px,
+          rgba(148, 163, 184, 0.10) 8px,
+          rgba(15, 23, 42, 0.16) 8px,
+          rgba(15, 23, 42, 0.16) 16px
+        ),
+        rgba(71, 85, 105, 0.30);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      opacity: 0.72;
+    }
+    .matched-item.filtered-out.crafted {
+      background:
+        repeating-linear-gradient(
+          -45deg,
+          rgba(148, 163, 184, 0.12) 0px,
+          rgba(148, 163, 184, 0.12) 8px,
+          rgba(15, 23, 42, 0.18) 8px,
+          rgba(15, 23, 42, 0.18) 16px
+        ),
+        rgba(30, 64, 35, 0.38);
+    }
+    .matched-item-title { font-weight: 700; margin-bottom: 4px; }
+    .matched-item-sub { color: var(--muted); font-size: 0.85rem; }
+    .matched-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    @media (max-width: 1100px) {
+      .grid { grid-template-columns: 340px 1fr; }
+      .matched-sidebar { grid-column: 1 / -1; position: static; }
+    }
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+      <h1 style="margin:0;">Pixel Worlds Ingredient Recipe Finder</h1>
+      <div class="muted" style="font-size:0.9rem; white-space:nowrap;">
+        by "Meme" (world "Taken")
+      </div>
+    </div>
+    <div class="sub">
+      Search for a block or item name to see which recipes use it as an ingredient.
+    </div>
+
+    <div class="grid">
+      <div class="card sidebar">
+        <h2 class="section-title">Data</h2>
+        <div class="field">
+          <label for="searchInput">Search ingredients / blocks</label>
+          <input id="searchInput" type="text" placeholder="Example: Pink Jelly or Soil Block" />
+        </div>
+
+        <div class="field">
+          <label for="sortMode">Sort results by</label>
+          <select id="sortMode">
+            <option value="tier-asc">Tier ascending</option>
+            <option value="tier-desc">Tier descending</option>
+            <option value="name-asc">Name A-Z</option>
+            <option value="name-desc">Name Z-A</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="partnerTierFilter">Other ingredient tier filter</label>
+          <select id="partnerTierFilter">
+            <option value="all">All</option>
+            <option value="1-4">Tier 1-4 only</option>
+          </select>
+        </div>
+
+        <div class="btn-row">
+          <button id="searchBtn">Search</button>
+          <button id="clearBtn" class="secondary">Clear</button>
+        </div>
+
+        <div id="status" class="empty" style="margin-top:16px;">Loading recipe data…</div>
+        <div class="muted" style="margin-top: 12px; font-size: 0.88rem; line-height: 1.5;">
+          Thanks for visiting! This website was created by Pixel Worlds user "Meme" (world name "Taken")
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="stats">
+          <div class="stat-box">
+            <div class="stat-label">Loaded recipes</div>
+            <div class="stat-value" id="statRecipes">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Recipes with ingredients</div>
+            <div class="stat-value" id="statUsable">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Search results</div>
+            <div class="stat-value" id="statResults">0</div>
+          </div>
+        </div>
+
+        <div id="activeFilters" style="margin-bottom: 8px;"></div>
+        <div id="results"></div>
+      </div>
+
+      <div class="card matched-sidebar">
+        <h2 class="section-title">Directly matched block/item names</h2>
+        <div class="muted" style="margin-bottom: 12px;">This panel shows item names that directly contain your search text, even when multiple names match.</div>
+        <div id="matchedItemsPanel" class="matched-list">
+          <div class="empty">Search for something to see which block or item names matched your query directly.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      rawData: null,
+      recipes: [],
+      filtered: [],
+      craftedRecipes: new Set(),
+      tierMap: {},
+      craftedViewOnly: false
+    };
+
+    const searchInput = document.getElementById('searchInput');
+    const sortMode = document.getElementById('sortMode');
+    const partnerTierFilter = document.getElementById('partnerTierFilter');
+    const searchBtn = document.getElementById('searchBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const resultsEl = document.getElementById('results');
+    const statusEl = document.getElementById('status');
+    const activeFiltersEl = document.getElementById('activeFilters');
+    const matchedItemsPanel = document.getElementById('matchedItemsPanel');
+
+    const statRecipes = document.getElementById('statRecipes');
+    const statUsable = document.getElementById('statUsable');
+    const statResults = document.getElementById('statResults');
+
+    function setStatus(message, type = 'empty') {
+      statusEl.className = type;
+      statusEl.textContent = message;
+    }
+
+    function updateStats() {
+      statRecipes.textContent = state.rawData?.recipes?.length ?? 0;
+      statUsable.textContent = state.recipes.length;
+      statResults.textContent = state.filtered.length;
+    }
+
+    function normalize(value) {
+      return String(value || '').trim().toLowerCase();
+    }
+
+    function craftedStorageKey() {
+      return 'pw-crafted-recipes';
+    }
+
+    function loadCraftedRecipes() {
+      try {
+        const raw = localStorage.getItem(craftedStorageKey());
+        const parsed = raw ? JSON.parse(raw) : [];
+        state.craftedRecipes = new Set(Array.isArray(parsed) ? parsed : []);
+      } catch (error) {
+        state.craftedRecipes = new Set();
+      }
+    }
+
+    function saveCraftedRecipes() {
+      localStorage.setItem(craftedStorageKey(), JSON.stringify([...state.craftedRecipes]));
+    }
+
+    function buildTierMap(parsed) {
+      const map = {};
+      const tiers = parsed?.tiers || {};
+      for (const [tierKey, items] of Object.entries(tiers)) {
+        const tierNum = Number(tierKey);
+        if (!Array.isArray(items)) continue;
+        for (const item of items) {
+          map[normalize(item)] = tierNum;
+        }
+      }
+      return map;
+    }
+
+    function getTierForItemName(itemName) {
+      return state.tierMap[normalize(itemName)] ?? null;
+    }
+
+    function getAllRecipes() {
+      return Array.isArray(state.rawData?.recipes) ? state.rawData.recipes : [];
+    }
+
+    function getRecipeByName(itemName) {
+      const target = normalize(itemName);
+      return getAllRecipes().find(r => normalize(r.name) === target) || null;
+    }
+
+    function getRecipeUrlByName(itemName) {
+      const found = getRecipeByName(itemName);
+      return found && found.url ? found.url : null;
+    }
+
+    function recipeIsUsedElsewhere(recipeName) {
+      const target = normalize(recipeName);
+      return getAllRecipes().some(recipe =>
+        Array.isArray(recipe.ingredients) &&
+        recipe.ingredients.some(ingredient => normalize(ingredient) === target)
+      );
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function escapeRegExp(value) {
+      return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function highlightMatch(text, query) {
+      const safeText = escapeHtml(text);
+      const trimmed = String(query || '').trim();
+      if (!trimmed) return safeText;
+      try {
+        const regex = new RegExp('(' + escapeRegExp(trimmed) + ')', 'ig');
+        return safeText.replace(regex, '<span class="highlight">$1</span>');
+      } catch (error) {
+        return safeText;
+      }
+    }
+
+    function makeTitleLink(name, rawQuery) {
+      const url = getRecipeUrlByName(name);
+      const label = highlightMatch(name, rawQuery);
+      if (!url) return '<span>' + label + '</span>';
+      return '<a class="title-link" href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
+    }
+
+    function getMatchingAndOtherIngredients(recipe, searchQuery) {
+      const matchingIngredients = recipe.ingredients.filter(
+        ingredient => normalize(ingredient).includes(searchQuery)
+      );
+      const otherIngredients = recipe.ingredients.filter(
+        ingredient => !matchingIngredients.includes(ingredient)
+      );
+      return { matchingIngredients, otherIngredients };
+    }
+
+    function passesPartnerTierFilter(recipe, searchQuery) {
+      const mode = partnerTierFilter.value;
+      if (mode === 'all' || !searchQuery) return true;
+
+      const details = getMatchingAndOtherIngredients(recipe, searchQuery);
+      if (!details.matchingIngredients.length || !details.otherIngredients.length) return false;
+
+      if (mode === '1-4') {
+        return details.otherIngredients.some(other => {
+          const tier = getTierForItemName(other);
+          return tier !== null && tier >= 1 && tier <= 4;
+        });
+      }
+
+      return true;
+    }
+
+    function isFilteredOutByPartnerTier(recipe, searchQuery) {
+      if (partnerTierFilter.value !== '1-4' || !searchQuery) return false;
+      return !passesPartnerTierFilter(recipe, searchQuery);
+    }
+
+    function isDirectMatchFilteredOut(matchItemName, searchQuery) {
+      if (partnerTierFilter.value !== '1-4' || !searchQuery) return false;
+      const recipe = getRecipeByName(matchItemName);
+      return !!(recipe && Array.isArray(recipe.ingredients) && recipe.ingredients.length && isFilteredOutByPartnerTier(recipe, searchQuery));
+    }
+
+    function sortRecipes(list, mode, searchQuery) {
+      const arr = [...list];
+      arr.sort((a, b) => {
+        const aFiltered = isFilteredOutByPartnerTier(a, searchQuery) ? 1 : 0;
+        const bFiltered = isFilteredOutByPartnerTier(b, searchQuery) ? 1 : 0;
+        if (aFiltered !== bFiltered) return aFiltered - bFiltered;
+
+        const aCrafted = state.craftedRecipes.has(a.name) ? 1 : 0;
+        const bCrafted = state.craftedRecipes.has(b.name) ? 1 : 0;
+        if (aCrafted !== bCrafted) return aCrafted - bCrafted;
+
+        if (mode === 'tier-asc') return (a.tier ?? 999) - (b.tier ?? 999) || a.name.localeCompare(b.name);
+        if (mode === 'tier-desc') return (b.tier ?? -999) - (a.tier ?? -999) || a.name.localeCompare(b.name);
+        if (mode === 'name-desc') return b.name.localeCompare(a.name);
+        return a.name.localeCompare(b.name);
+      });
+      return arr;
+    }
+
+    function getMatchedSearchItems(rawQuery) {
+      if (!state.rawData) return [];
+      const query = normalize(rawQuery);
+      if (!query) return [];
+
+      const matchedNames = new Set();
+
+      for (const item of Object.keys(state.tierMap)) {
+        if (item.includes(query)) matchedNames.add(item);
+      }
+
+      const results = [...matchedNames].map(nameKey => {
+        let properName = null;
+        for (const [tierKey, items] of Object.entries(state.rawData.tiers || {})) {
+          if (!Array.isArray(items)) continue;
+          for (const item of items) {
+            if (normalize(item) === nameKey) {
+              properName = { item, tier: Number(tierKey) };
+              break;
+            }
+          }
+          if (properName) break;
+        }
+
+        const finalItem = properName ? properName.item : nameKey;
+        return {
+          item: finalItem,
+          tier: properName ? properName.tier : null,
+          recipe: getRecipeByName(finalItem)
+        };
+      });
+
+      results.sort((a, b) => {
+        const aFiltered = a.recipe ? (isFilteredOutByPartnerTier(a.recipe, query) ? 1 : 0) : 0;
+        const bFiltered = b.recipe ? (isFilteredOutByPartnerTier(b.recipe, query) ? 1 : 0) : 0;
+        if (aFiltered !== bFiltered) return aFiltered - bFiltered;
+
+        const aCrafted = a.recipe && state.craftedRecipes.has(a.recipe.name) ? 1 : 0;
+        const bCrafted = b.recipe && state.craftedRecipes.has(b.recipe.name) ? 1 : 0;
+        if (aCrafted !== bCrafted) return aCrafted - bCrafted;
+
+        const at = a.tier ?? 999;
+        const bt = b.tier ?? 999;
+        return at - bt || a.item.localeCompare(b.item);
+      });
+
+      return results;
+    }
+
+    function renderMatchedItemsPanel(rawQuery) {
+      matchedItemsPanel.innerHTML = '';
+      const matches = getMatchedSearchItems(rawQuery);
+      const query = normalize(rawQuery);
+
+      if (!rawQuery.trim()) {
+        matchedItemsPanel.innerHTML = '<div class="empty">Search for something to see which block or item names matched your query directly.</div>';
+        return;
+      }
+
+      if (!matches.length) {
+        matchedItemsPanel.innerHTML = '<div class="empty">No block or item names matched your search text directly.</div>';
+        return;
+      }
+
+      for (const match of matches) {
+        const item = document.createElement('div');
+        item.className = 'matched-item active';
+
+        const filteredOut = isDirectMatchFilteredOut(match.item, query);
+        const crafted = match.recipe ? state.craftedRecipes.has(match.recipe.name) : false;
+
+        if (crafted) item.classList.add('crafted');
+        if (filteredOut) item.classList.add('filtered-out');
+
+        const top = document.createElement('div');
+        top.className = 'matched-top';
+
+        const titleWrap = document.createElement('div');
+        titleWrap.style.flex = '1';
+
+        const title = document.createElement('div');
+        title.className = 'matched-item-title';
+        title.innerHTML = makeTitleLink(match.item, rawQuery);
+
+        const sub = document.createElement('div');
+        sub.className = 'matched-item-sub';
+        sub.textContent = match.tier ? ('Tier ' + match.tier) : 'Tier unknown';
+
+        titleWrap.appendChild(title);
+        titleWrap.appendChild(sub);
+
+        const craftedLabel = document.createElement('label');
+        craftedLabel.className = 'crafted-toggle';
+        craftedLabel.style.marginLeft = '8px';
+
+        const craftedCheckbox = document.createElement('input');
+        craftedCheckbox.type = 'checkbox';
+        craftedCheckbox.checked = crafted;
+        craftedCheckbox.addEventListener('change', () => {
+          if (craftedCheckbox.checked) {
+            state.craftedRecipes.add(match.item);
+          } else {
+            state.craftedRecipes.delete(match.item);
+          }
+          saveCraftedRecipes();
+          runSearch();
+        });
+
+        const craftedText = document.createElement('span');
+        craftedText.textContent = 'Crafted';
+
+        craftedLabel.appendChild(craftedCheckbox);
+        craftedLabel.appendChild(craftedText);
+
+        top.appendChild(titleWrap);
+        top.appendChild(craftedLabel);
+        item.appendChild(top);
+
+        if (match.recipe && Array.isArray(match.recipe.ingredients) && match.recipe.ingredients.length) {
+          const ingWrap = document.createElement('div');
+          ingWrap.className = 'ingredients';
+          ingWrap.style.marginTop = '10px';
+
+          for (const ingredient of match.recipe.ingredients) {
+            const ing = document.createElement('span');
+            ing.className = 'ingredient';
+            const ingredientTier = getTierForItemName(ingredient);
+            const ingredientText = ingredientTier ? (ingredient + ' (T' + ingredientTier + ')') : ingredient;
+            ing.innerHTML = highlightMatch(ingredientText, rawQuery);
+            ingWrap.appendChild(ing);
+          }
+
+          const meta = document.createElement('div');
+          meta.className = 'recipe-meta';
+
+          const usageBadge = document.createElement('span');
+          const usedElsewhere = recipeIsUsedElsewhere(match.recipe.name);
+          usageBadge.className = 'meta-badge ' + (usedElsewhere ? 'used-elsewhere' : 'not-used-elsewhere');
+          usageBadge.textContent = usedElsewhere ? 'Can be used in other recipes' : 'Not used in other recipes';
+          meta.appendChild(usageBadge);
+
+          const craftedBadge = document.createElement('span');
+          craftedBadge.className = 'meta-badge';
+          craftedBadge.textContent = crafted ? 'Crafted' : 'Not crafted';
+          meta.appendChild(craftedBadge);
+
+          if (filteredOut) {
+            const filteredBadge = document.createElement('span');
+            filteredBadge.className = 'meta-badge';
+            filteredBadge.textContent = 'Filtered out by Tier 1-4';
+            meta.appendChild(filteredBadge);
+          }
+
+          item.appendChild(ingWrap);
+          item.appendChild(meta);
+        } else {
+          const noRecipe = document.createElement('div');
+          noRecipe.className = 'matched-item-sub';
+          noRecipe.style.marginTop = '8px';
+          noRecipe.textContent = 'No parsed recipe data available.';
+          item.appendChild(noRecipe);
+        }
+
+        matchedItemsPanel.appendChild(item);
+      }
+    }
+
+    function showCraftedOnly(e) {
+      if (e) e.preventDefault();
+      state.craftedViewOnly = true;
+      runSearch();
+    }
+
+    function renderResults() {
+      resultsEl.innerHTML = '';
+      activeFiltersEl.innerHTML = '';
+
+      const rawQuery = searchInput.value.trim();
+      const query = normalize(rawQuery);
+      renderMatchedItemsPanel(rawQuery);
+
+      if (rawQuery) {
+        const pill = document.createElement('span');
+        pill.className = 'pill';
+        pill.textContent = 'Search: ' + rawQuery;
+        activeFiltersEl.appendChild(pill);
+      }
+
+      const sortPill = document.createElement('span');
+      sortPill.className = 'pill';
+      sortPill.textContent = 'Sort: ' + sortMode.options[sortMode.selectedIndex].text;
+      activeFiltersEl.appendChild(sortPill);
+
+      const tierPill = document.createElement('span');
+      tierPill.className = 'pill';
+      tierPill.textContent = 'Other ingredient tier: ' + partnerTierFilter.options[partnerTierFilter.selectedIndex].text;
+      activeFiltersEl.appendChild(tierPill);
+
+      const craftedPill = document.createElement('span');
+      craftedPill.className = 'pill';
+      craftedPill.textContent = 'Crafted recipes: ' + state.craftedRecipes.size;
+
+      const craftedLink = document.createElement('a');
+      craftedLink.className = 'pill-link';
+      craftedLink.href = '#';
+      craftedLink.textContent = '?';
+      craftedLink.title = 'Show only crafted recipes';
+      craftedLink.addEventListener('click', showCraftedOnly);
+      craftedPill.appendChild(craftedLink);
+      activeFiltersEl.appendChild(craftedPill);
+
+      if (state.craftedViewOnly) {
+        const craftedViewPill = document.createElement('span');
+        craftedViewPill.className = 'pill';
+        craftedViewPill.textContent = 'Showing crafted recipes only';
+
+        const resetLink = document.createElement('a');
+        resetLink.className = 'pill-link';
+        resetLink.href = '#';
+        resetLink.textContent = '×';
+        resetLink.title = 'Exit crafted-only view';
+        resetLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          state.craftedViewOnly = false;
+          runSearch();
+        });
+
+        craftedViewPill.appendChild(resetLink);
+        activeFiltersEl.appendChild(craftedViewPill);
+      }
+
+      if (!state.rawData) {
+        resultsEl.innerHTML = '<div class="empty">Load your JSON file first.</div>';
+        updateStats();
+        return;
+      }
+
+      if (!state.filtered.length) {
+        resultsEl.innerHTML += '<div class="empty">No recipes matched your search.</div>';
+        updateStats();
+        return;
+      }
+
+      for (const recipe of state.filtered) {
+        const card = document.createElement('div');
+        card.className = 'result-card';
+
+        const recipeFilteredOut = isFilteredOutByPartnerTier(recipe, query);
+        const recipeCrafted = state.craftedRecipes.has(recipe.name);
+
+        if (recipeCrafted) card.classList.add('crafted');
+        if (recipeFilteredOut) card.classList.add('filtered-out');
+
+        const header = document.createElement('div');
+        header.className = 'result-header';
+
+        const left = document.createElement('div');
+        const title = document.createElement('div');
+        title.className = 'result-title';
+        title.innerHTML = makeTitleLink(recipe.name, rawQuery);
+        left.appendChild(title);
+
+        const line = document.createElement('div');
+        line.className = 'muted';
+        line.textContent = 'Used ingredients:';
+        left.appendChild(line);
+
+        const actions = document.createElement('div');
+        actions.className = 'result-actions';
+
+        const tierBadge = document.createElement('span');
+        tierBadge.className = 'pill';
+        tierBadge.textContent = 'Tier ' + (recipe.tier ?? '?');
+
+        const craftedLabel = document.createElement('label');
+        craftedLabel.className = 'crafted-toggle';
+
+        const craftedCheckbox = document.createElement('input');
+        craftedCheckbox.type = 'checkbox';
+        craftedCheckbox.checked = recipeCrafted;
+        craftedCheckbox.addEventListener('change', () => {
+          if (craftedCheckbox.checked) {
+            state.craftedRecipes.add(recipe.name);
+          } else {
+            state.craftedRecipes.delete(recipe.name);
+          }
+          saveCraftedRecipes();
+          runSearch();
+        });
+
+        const craftedText = document.createElement('span');
+        craftedText.textContent = 'Crafted';
+
+        craftedLabel.appendChild(craftedCheckbox);
+        craftedLabel.appendChild(craftedText);
+        actions.appendChild(tierBadge);
+        actions.appendChild(craftedLabel);
+
+        header.appendChild(left);
+        header.appendChild(actions);
+
+        const ingredients = document.createElement('div');
+        ingredients.className = 'ingredients';
+        for (const ingredient of recipe.ingredients) {
+          const item = document.createElement('span');
+          item.className = 'ingredient';
+          const ingredientTier = getTierForItemName(ingredient);
+          const ingredientText = ingredientTier ? (ingredient + ' (T' + ingredientTier + ')') : ingredient;
+          item.innerHTML = highlightMatch(ingredientText, rawQuery);
+          ingredients.appendChild(item);
+        }
+
+        const meta = document.createElement('div');
+        meta.className = 'recipe-meta';
+
+        const usageBadge = document.createElement('span');
+        const usedElsewhere = recipeIsUsedElsewhere(recipe.name);
+        usageBadge.className = 'meta-badge ' + (usedElsewhere ? 'used-elsewhere' : 'not-used-elsewhere');
+        usageBadge.textContent = usedElsewhere ? 'Can be used in other recipes' : 'Not used in other recipes';
+        meta.appendChild(usageBadge);
+
+        if (recipeFilteredOut) {
+          const filteredBadge = document.createElement('span');
+          filteredBadge.className = 'meta-badge';
+          filteredBadge.textContent = 'Filtered out by Tier 1-4';
+          meta.appendChild(filteredBadge);
+        }
+
+        card.appendChild(header);
+        card.appendChild(ingredients);
+        card.appendChild(meta);
+        resultsEl.appendChild(card);
+      }
+
+      updateStats();
+    }
+
+    function runSearch() {
+      if (!state.rawData) {
+        setStatus('Load your JSON file before searching.', 'error');
+        renderResults();
+        return;
+      }
+
+      const query = normalize(searchInput.value);
+      let matches = [...state.recipes];
+
+      if (query) {
+        matches = matches.filter(recipe =>
+          recipe.ingredients.some(ingredient => normalize(ingredient).includes(query))
+        );
+      }
+
+      if (state.craftedViewOnly) {
+        matches = matches.filter(recipe => state.craftedRecipes.has(recipe.name));
+      }
+
+      state.filtered = sortRecipes(matches, sortMode.value, query);
+      setStatus('Loaded ' + state.recipes.length + ' recipes with ingredients.', 'empty');
+      renderResults();
+    }
+
+    function clearSearch() {
+      searchInput.value = '';
+      partnerTierFilter.value = 'all';
+      state.craftedViewOnly = false;
+
+      if (state.rawData) {
+        state.filtered = sortRecipes([...state.recipes], sortMode.value, '');
+        setStatus('Loaded ' + state.recipes.length + ' recipes with ingredients.', 'empty');
+      } else {
+        state.filtered = [];
+        setStatus('Loading recipe data…', 'empty');
+      }
+
+      renderResults();
+    }
+
+    function applyParsedData(parsed, sourceLabel) {
+      const recipes = Array.isArray(parsed.recipes) ? parsed.recipes : [];
+      const usable = recipes.filter(r => Array.isArray(r.ingredients) && r.ingredients.length > 0);
+
+      state.rawData = parsed;
+      state.tierMap = buildTierMap(parsed);
+      state.recipes = usable;
+      state.filtered = sortRecipes([...usable], sortMode.value, '');
+
+      setStatus('Loaded ' + usable.length + ' usable recipes from ' + sourceLabel + '.', 'empty');
+      renderResults();
+    }
+
+    async function autoLoadJson() {
+      setStatus('Loading recipe data…', 'empty');
+      try {
+        const response = await fetch('./pixel_worlds_recipes.json', { cache: 'no-store' });
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status + ' while loading pixel_worlds_recipes.json');
+        }
+        const parsed = await response.json();
+        applyParsedData(parsed, 'pixel_worlds_recipes.json');
+      } catch (err) {
+        state.rawData = null;
+        state.recipes = [];
+        state.filtered = [];
+        state.tierMap = {};
+        setStatus('Failed to auto-load pixel_worlds_recipes.json: ' + err.message, 'error');
+        renderResults();
+      }
+    }
+
+    searchBtn.addEventListener('click', () => {
+      state.craftedViewOnly = false;
+      runSearch();
+    });
+    clearBtn.addEventListener('click', clearSearch);
+    sortMode.addEventListener('change', runSearch);
+    partnerTierFilter.addEventListener('change', runSearch);
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        state.craftedViewOnly = false;
+        runSearch();
+      }
+    });
+
+    loadCraftedRecipes();
+    renderResults();
+    autoLoadJson();
+  </script>
+</body>
+</html>
