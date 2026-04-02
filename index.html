@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pixel Worlds Recipe Explorer</title>
+  <title>Pixel Worlds Recipe Finder</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -249,13 +249,13 @@
 <body>
   <div class="wrap">
     <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
-  <h1 style="margin:0;">Pixel Worlds Recipe Explorer</h1>
+  <h1 style="margin:0;">Pixel Worlds Ingredient Recipe Finder</h1>
   <div class="muted" style="font-size:0.9rem; white-space:nowrap;">
-    by player "Meme" (world name "Taken")
+    by "Meme" (world "Taken")
   </div>
 </div>
     <div class="sub">
-      Search for a block or item name to see which recipes use it as an ingredient. Recipe data loads automatically from <code>pixel_worlds_recipes.json</code>.
+      Search for a block or item name to see which recipes use it as an ingredient.</code>
     </div>
 
     <div class="grid">
@@ -291,7 +291,7 @@
 
         <div id="status" class="empty" style="margin-top:16px;">Loading recipe data…</div>
         <div class="muted" style="margin-top: 12px; font-size: 0.88rem; line-height: 1.5;">
-          For hosting, keep this HTML file and <code>pixel_worlds_recipes.json</code> in the same folder or repository root.
+          Thanks for visiting! This website was created by Pixel Worlds user "Meme" (world name "Taken")
         </div>
       </div>
 
@@ -856,16 +856,6 @@
           const parsed = JSON.parse(event.target.result);
           applyParsedData(parsed, file.name);
         } catch (err) {
-          state.rawData = null;
-          state.recipes = [];
-          state.filtered = [];
-          state.tierMap = {};
-          setStatus('Invalid JSON file: ' + err.message, 'error');
-          renderResults();
-        }
-      };
-      reader.readAsText(file);
-    } catch (err) {
           state.rawData = null;
           state.recipes = [];
           state.filtered = [];
