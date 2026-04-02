@@ -62,7 +62,7 @@
     .results-panel { order: 2; }
     .matched-sidebar { position: sticky; top: 20px; height: fit-content; order: 3; }
     .section-title { margin: 0 0 12px; font-size: 1rem; font-weight: 700; }
-    .field { margin-bottom: 14px; }
+    .field { margin-bottom: 14px; position: relative; }
     label { display: block; margin-bottom: 6px; font-size: 0.92rem; color: var(--muted); }
     input[type="text"], select {
       width: 100%;
@@ -73,6 +73,66 @@
       color: var(--text);
       font-size: 0.95rem;
       outline: none;
+    }
+    .search-history {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      z-index: 30;
+      background: rgba(17, 24, 39, 0.98);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.30);
+      overflow: hidden;
+    }
+    .search-history.hidden {
+      display: none;
+    }
+    .search-history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.82rem;
+      background: rgba(15, 23, 42, 0.65);
+    }
+    .search-history-clear {
+      border: 0;
+      background: transparent;
+      color: #93c5fd;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 0;
+    }
+    .search-history-clear:hover {
+      text-decoration: underline;
+    }
+    .search-history-list {
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .search-history-item {
+      width: 100%;
+      text-align: left;
+      border: 0;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.45);
+      background: transparent;
+      color: var(--text);
+      padding: 11px 12px;
+      cursor: pointer;
+      font-weight: 500;
+      border-radius: 0;
+    }
+    .search-history-item:last-child {
+      border-bottom: 0;
+    }
+    .search-history-item:hover {
+      background: rgba(30, 41, 59, 0.75);
     }
     .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
     button {
@@ -372,7 +432,14 @@
         <h2 class="section-title">Data</h2>
         <div class="field">
           <label for="searchInput">Search ingredients / blocks</label>
-          <input id="searchInput" type="text" placeholder="Example: Pink Jelly or Soil Block" />
+          <input id="searchInput" type="text" placeholder="Example: Pink Jelly or Soil Block" autocomplete="off" />
+          <div id="searchHistory" class="search-history hidden">
+            <div class="search-history-header">
+              <span>Recent searches</span>
+              <button id="clearHistoryBtn" type="button" class="search-history-clear">Clear</button>
+            </div>
+            <div id="searchHistoryList" class="search-history-list"></div>
+          </div>
         </div>
 
         <div class="field">
@@ -441,7 +508,8 @@
       filtered: [],
       craftedRecipes: new Set(),
       tierMap: {},
-      craftedViewOnly: false
+      craftedViewOnly: false,
+      searchHistory: []
     };
 
     const searchInput = document.getElementById('searchInput');
@@ -449,6 +517,9 @@
     const partnerTierFilter = document.getElementById('partnerTierFilter');
     const searchBtn = document.getElementById('searchBtn');
     const clearBtn = document.getElementById('clearBtn');
+    const searchHistoryEl = document.getElementById('searchHistory');
+    const searchHistoryListEl = document.getElementById('searchHistoryList');
+    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
     const resultsEl = document.getElementById('results');
     const statusEl = document.getElementById('status');
     const activeFiltersEl = document.getElementById('activeFilters');
@@ -475,6 +546,77 @@
 
     function craftedStorageKey() {
       return 'pw-crafted-recipes';
+    }
+
+    function searchHistoryStorageKey() {
+      return 'pw-search-history';
+    }
+
+    function loadSearchHistory() {
+      try {
+        const raw = localStorage.getItem(searchHistoryStorageKey());
+        const parsed = raw ? JSON.parse(raw) : [];
+        state.searchHistory = Array.isArray(parsed) ? parsed.filter(x => typeof x === 'string') : [];
+      } catch (error) {
+        state.searchHistory = [];
+      }
+    }
+
+    function saveSearchHistory() {
+      localStorage.setItem(searchHistoryStorageKey(), JSON.stringify(state.searchHistory));
+    }
+
+    function addSearchToHistory(value) {
+      const normalized = String(value || '').trim();
+      if (!normalized) return;
+      state.searchHistory = state.searchHistory.filter(item => item.toLowerCase() !== normalized.toLowerCase());
+      state.searchHistory.unshift(normalized);
+      state.searchHistory = state.searchHistory.slice(0, 12);
+      saveSearchHistory();
+      renderSearchHistory();
+    }
+
+    function clearSearchHistory() {
+      state.searchHistory = [];
+      saveSearchHistory();
+      renderSearchHistory();
+      hideSearchHistory();
+    }
+
+    function renderSearchHistory() {
+      searchHistoryListEl.innerHTML = '';
+      if (!state.searchHistory.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.style.margin = '8px';
+        empty.style.padding = '10px 12px';
+        empty.textContent = 'No recent searches yet.';
+        searchHistoryListEl.appendChild(empty);
+        return;
+      }
+
+      for (const entry of state.searchHistory) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'search-history-item';
+        btn.textContent = entry;
+        btn.addEventListener('click', () => {
+          searchInput.value = entry;
+          hideSearchHistory();
+          state.craftedViewOnly = false;
+          runSearch();
+        });
+        searchHistoryListEl.appendChild(btn);
+      }
+    }
+
+    function showSearchHistory() {
+      renderSearchHistory();
+      searchHistoryEl.classList.remove('hidden');
+    }
+
+    function hideSearchHistory() {
+      searchHistoryEl.classList.add('hidden');
     }
 
     function loadCraftedRecipes() {
@@ -1009,7 +1151,11 @@
         return;
       }
 
-      const query = normalize(searchInput.value);
+      const rawValue = searchInput.value.trim();
+      const query = normalize(rawValue);
+      if (rawValue) {
+        addSearchToHistory(rawValue);
+      }
       let matches = [...state.recipes];
 
       if (query) {
@@ -1078,18 +1224,41 @@
     searchBtn.addEventListener('click', () => {
       state.craftedViewOnly = false;
       runSearch();
+      hideSearchHistory();
     });
-    clearBtn.addEventListener('click', clearSearch);
+    clearBtn.addEventListener('click', () => {
+      clearSearch();
+      hideSearchHistory();
+    });
+    clearHistoryBtn.addEventListener('click', clearSearchHistory);
     sortMode.addEventListener('change', runSearch);
     partnerTierFilter.addEventListener('change', runSearch);
+    searchInput.addEventListener('focus', () => {
+      showSearchHistory();
+    });
+    searchInput.addEventListener('input', () => {
+      showSearchHistory();
+    });
     searchInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         state.craftedViewOnly = false;
         runSearch();
+        hideSearchHistory();
+      } else if (e.key === 'Escape') {
+        hideSearchHistory();
+      }
+    });
+    document.addEventListener('click', (e) => {
+      const withinHistory = searchHistoryEl.contains(e.target);
+      const onInput = e.target === searchInput;
+      if (!withinHistory && !onInput) {
+        hideSearchHistory();
       }
     });
 
     loadCraftedRecipes();
+    loadSearchHistory();
+    renderSearchHistory();
     renderResults();
     autoLoadJson();
   </script>
