@@ -135,6 +135,36 @@
       background: rgba(30, 41, 59, 0.75);
     }
     .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .external-link-card {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.72);
+    }
+    .external-link-card-title {
+      font-size: 0.84rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .external-link-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 12px;
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .external-link-button:hover {
+      background: #263449;
+      text-decoration: none;
+    }
     button {
       border: 0;
       border-radius: 12px;
@@ -468,6 +498,18 @@
         <div id="status" class="empty" style="margin-top:16px;">Loading recipe data…</div>
         <div class="muted" style="margin-top: 12px; font-size: 0.88rem; line-height: 1.5;">
           Thanks for visiting! This website was created by Pixel Worlds user "Meme" (world name "Taken")
+        </div>
+
+        <div class="external-link-card">
+          <div class="external-link-card-title">Discuss this tool</div>
+          <a
+            class="external-link-button"
+            href="https://www.reddit.com/r/PixelWorlds/comments/1sark5t/i_made_a_tool_to_find_all_recipes_for_any_item_in/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open Reddit discussion
+          </a>
         </div>
       </div>
 
