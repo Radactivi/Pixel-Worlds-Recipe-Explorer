@@ -69,7 +69,9 @@
     button:hover { background: var(--accent-2); }
     button.secondary:hover { background: #4b5563; }
     .pill {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       padding: 5px 10px;
       border-radius: 999px;
       background: #1e293b;
@@ -78,6 +80,15 @@
       font-size: 0.82rem;
       margin-right: 8px;
       margin-bottom: 8px;
+    }
+    .pill-link {
+      color: #93c5fd;
+      text-decoration: none;
+      font-weight: 700;
+      margin-left: 2px;
+    }
+    .pill-link:hover {
+      text-decoration: underline;
     }
     .result-card {
       border: 1px solid var(--border);
@@ -232,8 +243,38 @@
       background: rgba(30, 64, 35, 0.45);
       border: 1px solid rgba(34, 197, 94, 0.35);
     }
+    .matched-item.filtered-out {
+      background:
+        repeating-linear-gradient(
+          -45deg,
+          rgba(148, 163, 184, 0.10) 0px,
+          rgba(148, 163, 184, 0.10) 8px,
+          rgba(15, 23, 42, 0.16) 8px,
+          rgba(15, 23, 42, 0.16) 16px
+        ),
+        rgba(71, 85, 105, 0.30);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      opacity: 0.72;
+    }
+    .matched-item.filtered-out.crafted {
+      background:
+        repeating-linear-gradient(
+          -45deg,
+          rgba(148, 163, 184, 0.12) 0px,
+          rgba(148, 163, 184, 0.12) 8px,
+          rgba(15, 23, 42, 0.18) 8px,
+          rgba(15, 23, 42, 0.18) 16px
+        ),
+        rgba(30, 64, 35, 0.38);
+    }
     .matched-item-title { font-weight: 700; margin-bottom: 4px; }
     .matched-item-sub { color: var(--muted); font-size: 0.85rem; }
+    .matched-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
 
     @media (max-width: 1100px) {
       .grid { grid-template-columns: 340px 1fr; }
@@ -249,19 +290,19 @@
 <body>
   <div class="wrap">
     <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
-  <h1 style="margin:0;">Pixel Worlds Ingredient Recipe Finder</h1>
-  <div class="muted" style="font-size:0.9rem; white-space:nowrap;">
-    by "Meme" (world "Taken")
-  </div>
-</div>
+      <h1 style="margin:0;">Pixel Worlds Ingredient Recipe Finder</h1>
+      <div class="muted" style="font-size:0.9rem; white-space:nowrap;">
+        by "Meme" (world "Taken")
+      </div>
+    </div>
     <div class="sub">
-      Search for a block or item name to see which recipes use it as an ingredient.</code>
+      Search for a block or item name to see which recipes use it as an ingredient.
     </div>
 
     <div class="grid">
       <div class="card sidebar">
         <h2 class="section-title">Data</h2>
-<div class="field">
+        <div class="field">
           <label for="searchInput">Search ingredients / blocks</label>
           <input id="searchInput" type="text" placeholder="Example: Pink Jelly or Soil Block" />
         </div>
@@ -331,7 +372,8 @@
       recipes: [],
       filtered: [],
       craftedRecipes: new Set(),
-      tierMap: {}
+      tierMap: {},
+      craftedViewOnly: false
     };
 
     const searchInput = document.getElementById('searchInput');
@@ -486,9 +528,8 @@
 
     function isDirectMatchFilteredOut(matchItemName, searchQuery) {
       if (partnerTierFilter.value !== '1-4' || !searchQuery) return false;
-      const target = normalize(matchItemName);
-      const matchingRecipe = state.filtered.find(r => normalize(r.name) === target);
-      return !!(matchingRecipe && isFilteredOutByPartnerTier(matchingRecipe, searchQuery));
+      const recipe = getRecipeByName(matchItemName);
+      return !!(recipe && Array.isArray(recipe.ingredients) && recipe.ingredients.length && isFilteredOutByPartnerTier(recipe, searchQuery));
     }
 
     function sortRecipes(list, mode, searchQuery) {
@@ -584,6 +625,12 @@
         if (crafted) item.classList.add('crafted');
         if (filteredOut) item.classList.add('filtered-out');
 
+        const top = document.createElement('div');
+        top.className = 'matched-top';
+
+        const titleWrap = document.createElement('div');
+        titleWrap.style.flex = '1';
+
         const title = document.createElement('div');
         title.className = 'matched-item-title';
         title.innerHTML = makeTitleLink(match.item, rawQuery);
@@ -592,8 +639,35 @@
         sub.className = 'matched-item-sub';
         sub.textContent = match.tier ? ('Tier ' + match.tier) : 'Tier unknown';
 
-        item.appendChild(title);
-        item.appendChild(sub);
+        titleWrap.appendChild(title);
+        titleWrap.appendChild(sub);
+
+        const craftedLabel = document.createElement('label');
+        craftedLabel.className = 'crafted-toggle';
+        craftedLabel.style.marginLeft = '8px';
+
+        const craftedCheckbox = document.createElement('input');
+        craftedCheckbox.type = 'checkbox';
+        craftedCheckbox.checked = crafted;
+        craftedCheckbox.addEventListener('change', () => {
+          if (craftedCheckbox.checked) {
+            state.craftedRecipes.add(match.item);
+          } else {
+            state.craftedRecipes.delete(match.item);
+          }
+          saveCraftedRecipes();
+          runSearch();
+        });
+
+        const craftedText = document.createElement('span');
+        craftedText.textContent = 'Crafted';
+
+        craftedLabel.appendChild(craftedCheckbox);
+        craftedLabel.appendChild(craftedText);
+
+        top.appendChild(titleWrap);
+        top.appendChild(craftedLabel);
+        item.appendChild(top);
 
         if (match.recipe && Array.isArray(match.recipe.ingredients) && match.recipe.ingredients.length) {
           const ingWrap = document.createElement('div');
@@ -644,6 +718,12 @@
       }
     }
 
+    function showCraftedOnly(e) {
+      if (e) e.preventDefault();
+      state.craftedViewOnly = true;
+      runSearch();
+    }
+
     function renderResults() {
       resultsEl.innerHTML = '';
       activeFiltersEl.innerHTML = '';
@@ -672,7 +752,35 @@
       const craftedPill = document.createElement('span');
       craftedPill.className = 'pill';
       craftedPill.textContent = 'Crafted recipes: ' + state.craftedRecipes.size;
+
+      const craftedLink = document.createElement('a');
+      craftedLink.className = 'pill-link';
+      craftedLink.href = '#';
+      craftedLink.textContent = '?';
+      craftedLink.title = 'Show only crafted recipes';
+      craftedLink.addEventListener('click', showCraftedOnly);
+      craftedPill.appendChild(craftedLink);
       activeFiltersEl.appendChild(craftedPill);
+
+      if (state.craftedViewOnly) {
+        const craftedViewPill = document.createElement('span');
+        craftedViewPill.className = 'pill';
+        craftedViewPill.textContent = 'Showing crafted recipes only';
+
+        const resetLink = document.createElement('a');
+        resetLink.className = 'pill-link';
+        resetLink.href = '#';
+        resetLink.textContent = '×';
+        resetLink.title = 'Exit crafted-only view';
+        resetLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          state.craftedViewOnly = false;
+          runSearch();
+        });
+
+        craftedViewPill.appendChild(resetLink);
+        activeFiltersEl.appendChild(craftedViewPill);
+      }
 
       if (!state.rawData) {
         resultsEl.innerHTML = '<div class="empty">Load your JSON file first.</div>';
@@ -782,7 +890,7 @@
 
     function runSearch() {
       if (!state.rawData) {
-        setStatus('Load a JSON file before searching.', 'error');
+        setStatus('Load your JSON file before searching.', 'error');
         renderResults();
         return;
       }
@@ -796,6 +904,10 @@
         );
       }
 
+      if (state.craftedViewOnly) {
+        matches = matches.filter(recipe => state.craftedRecipes.has(recipe.name));
+      }
+
       state.filtered = sortRecipes(matches, sortMode.value, query);
       setStatus('Loaded ' + state.recipes.length + ' recipes with ingredients.', 'empty');
       renderResults();
@@ -804,6 +916,7 @@
     function clearSearch() {
       searchInput.value = '';
       partnerTierFilter.value = 'all';
+      state.craftedViewOnly = false;
 
       if (state.rawData) {
         state.filtered = sortRecipes([...state.recipes], sortMode.value, '');
@@ -815,7 +928,6 @@
 
       renderResults();
     }
-
 
     function applyParsedData(parsed, sourceLabel) {
       const recipes = Array.isArray(parsed.recipes) ? parsed.recipes : [];
@@ -849,37 +961,23 @@
       }
     }
 
-    function loadJsonFile(file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const parsed = JSON.parse(event.target.result);
-          applyParsedData(parsed, file.name);
-        } catch (err) {
-          state.rawData = null;
-          state.recipes = [];
-          state.filtered = [];
-          state.tierMap = {};
-          setStatus('Invalid JSON file: ' + err.message, 'error');
-          renderResults();
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    searchBtn.addEventListener('click', runSearch);
+    searchBtn.addEventListener('click', () => {
+      state.craftedViewOnly = false;
+      runSearch();
+    });
     clearBtn.addEventListener('click', clearSearch);
     sortMode.addEventListener('change', runSearch);
     partnerTierFilter.addEventListener('change', runSearch);
     searchInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') runSearch();
+      if (e.key === 'Enter') {
+        state.craftedViewOnly = false;
+        runSearch();
+      }
     });
 
     loadCraftedRecipes();
     renderResults();
     autoLoadJson();
   </script>
-
-
 </body>
 </html>
