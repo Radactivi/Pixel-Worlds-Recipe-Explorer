@@ -201,170 +201,29 @@
       flex-wrap: wrap;
       margin-top: 8px;
     }
-    .inventory-summary {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    .inventory-list {
+      display: flex;
+      flex-direction: column;
       gap: 8px;
       margin-top: 10px;
     }
-    .inventory-summary-box {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: rgba(15, 23, 42, 0.72);
-      padding: 10px 12px;
-    }
-    .inventory-summary-label {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-    .inventory-summary-value {
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: var(--text);
-    }
-    .inventory-modal-trigger {
-      width: 100%;
-      justify-content: center;
-    }
-    .inventory-modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(2, 6, 23, 0.72);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 10000;
-    }
-    .inventory-modal-overlay.hidden {
-      display: none;
-    }
-    .inventory-modal {
-      width: min(980px, 100%);
-      max-height: min(86vh, 900px);
-      overflow: auto;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      background: rgba(17, 24, 39, 0.98);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
-      padding: 18px;
-    }
-    .inventory-modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-    .inventory-modal-title {
-      font-size: 1.05rem;
-      font-weight: 800;
-    }
-    .inventory-modal-sub {
-      color: var(--muted);
-      font-size: 0.86rem;
-      margin-top: 3px;
-    }
-    .inventory-close-btn {
-      border: 1px solid var(--border);
-      background: #1e293b;
-      color: var(--text);
-      min-width: auto;
-    }
-    .inventory-modal-body {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .inventory-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      gap: 10px;
-      margin-top: 0;
-    }
     .inventory-item {
       display: flex;
-      flex-direction: column;
-      gap: 10px;
-      min-height: 134px;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: rgba(15, 23, 42, 0.82);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
-    }
-    .inventory-item.inventory-item-ready {
-      border-color: rgba(34, 197, 94, 0.45);
-      background: rgba(20, 83, 45, 0.28);
-    }
-    .inventory-item.inventory-item-usable {
-      border-color: rgba(96, 165, 250, 0.36);
-      background: rgba(30, 41, 59, 0.9);
-    }
-    .inventory-item.inventory-item-unused {
-      border-color: rgba(239, 68, 68, 0.35);
-      background: rgba(69, 10, 10, 0.22);
-    }
-    .inventory-item-top {
-      display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
       gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.7);
     }
     .inventory-item-name {
       font-weight: 700;
       color: var(--text);
-      line-height: 1.25;
-      word-break: break-word;
     }
     .inventory-item-qty {
       color: var(--muted);
-      font-size: 0.86rem;
-      font-weight: 700;
-      white-space: nowrap;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 4px 8px;
-      background: rgba(15, 23, 42, 0.95);
-    }
-    .inventory-item-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .inventory-item-badge {
-      display: inline-flex;
-      align-items: center;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 5px 8px;
-      font-size: 0.74rem;
-      font-weight: 800;
-      background: rgba(15, 23, 42, 0.95);
-      color: var(--muted);
-    }
-    .inventory-item-badge.ready {
-      color: #bbf7d0;
-      border-color: rgba(34, 197, 94, 0.4);
-      background: rgba(20, 83, 45, 0.42);
-    }
-    .inventory-item-badge.usable {
-      color: #bfdbfe;
-      border-color: rgba(96, 165, 250, 0.4);
-      background: rgba(30, 64, 175, 0.18);
-    }
-    .inventory-item-badge.unused {
-      color: #fecaca;
-      border-color: rgba(239, 68, 68, 0.36);
-      background: rgba(127, 29, 29, 0.28);
-    }
-    .inventory-item-note {
-      color: var(--muted);
-      font-size: 0.8rem;
-      line-height: 1.35;
-      flex: 1;
+      font-size: 0.9rem;
     }
     .inventory-remove {
       border: 0;
@@ -374,7 +233,6 @@
       font-weight: 700;
       padding: 0;
       min-width: auto;
-      align-self: flex-start;
     }
     .inventory-remove:hover {
       text-decoration: underline;
@@ -413,6 +271,8 @@
     button.secondary { background: #374151; }
     button:hover { background: var(--accent-2); }
     button.secondary:hover { background: #4b5563; }
+    button.danger { background: #7f1d1d; }
+    button.danger:hover { background: #991b1b; }
     .pill {
       display: inline-flex;
       align-items: center;
@@ -684,44 +544,9 @@
       .matched-sidebar { order: 2; }
       .results-panel { order: 3; }
       .wrap { padding: 16px; }
-      .inventory-modal {
-        padding: 14px;
-      }
-      .inventory-summary {
-        grid-template-columns: 1fr;
-      }
     }
   </style>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BDCQ8G5L7R"></script>
-
-        <div id="inventoryModalOverlay" class="inventory-modal-overlay hidden" aria-hidden="true">
-          <div class="inventory-modal" role="dialog" aria-modal="true" aria-labelledby="inventoryModalTitle">
-            <div class="inventory-modal-header">
-              <div>
-                <div id="inventoryModalTitle" class="inventory-modal-title">Inventory</div>
-                <div class="inventory-modal-sub">Green = craft now, blue = keep for later, red = safe to throw out.</div>
-              </div>
-              <button id="closeInventoryModalBtn" type="button" class="inventory-close-btn">Close</button>
-            </div>
-            <div class="inventory-modal-body">
-              <div class="field" style="margin-bottom: 16px;">
-                <label for="inventoryItemInput">Add ingredients</label>
-                <div class="inventory-controls">
-                  <input id="inventoryItemInput" type="text" placeholder="Example: Soil Block" list="allItemsDatalist" autocomplete="off" />
-                  <input id="inventoryQtyInput" type="text" inputmode="numeric" placeholder="Qty" value="1" />
-                </div>
-                <div class="inventory-actions">
-                  <button id="addInventoryBtn" type="button" class="secondary">Add / Update</button>
-                  <button id="clearInventoryBtn" type="button" class="secondary">Clear ingredients</button>
-                </div>
-              </div>
-              <div id="inventorySummary" class="inventory-summary"></div>
-              <div id="inventoryList" class="inventory-list"></div>
-            </div>
-          </div>
-        </div>
-
-
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -790,12 +615,23 @@
 
         <div id="inventoryModePanel" class="mode-panel hidden">
           <div class="field">
+            <label for="inventoryItemInput">Current ingredients</label>
+            <div class="inventory-controls">
+              <input id="inventoryItemInput" type="text" placeholder="Example: Soil Block" list="allItemsDatalist" autocomplete="off" />
+              <input id="inventoryQtyInput" type="text" inputmode="numeric" placeholder="Qty" value="1" />
+            </div>
+            <div class="inventory-actions">
+              <button id="addInventoryBtn" type="button" class="secondary">Add / Update</button>
+              <button id="clearInventoryBtn" type="button" class="secondary">Clear ingredients</button>
+            </div>
+            <label class="inventory-toggle">
+              <input id="inventoryFilterToggle" type="checkbox" checked />
+              <span>Inventory mode only shows recipes craftable from my ingredients</span>
+            </label>
             <div class="inventory-help">
-              Open the inventory window to add ingredients, check what you can craft now, see what is still useful later, and identify what is safe to throw out.
+              Add the ingredients you currently have, like 1x Soil Block or 2x Water. This mode is for checking what you can craft from your current inventory.
             </div>
-            <div class="inventory-actions" style="margin-top: 12px;">
-              <button id="openInventoryModalBtn" type="button" class="secondary inventory-modal-trigger">Open inventory</button>
-            </div>
+            <div id="inventoryList" class="inventory-list"></div>
             <datalist id="allItemsDatalist"></datalist>
           </div>
 
@@ -809,14 +645,16 @@
             </select>
           </div>
 
+          <div class="btn-row">
+            <button id="inventorySearchBtn">Show craftable recipes</button>
+            <button id="inventoryClearBtn" class="secondary">Reset inventory view</button>
+          </div>
         </div>
 
         <div id="status" class="empty" style="margin-top:16px;">Loading recipe data…</div>
         <div class="muted" style="margin-top: 12px; font-size: 0.88rem; line-height: 1.5;">
           Thanks for visiting! This website was created by Pixel Worlds user "Meme" (world name "Taken")
         </div>
-
-
 
         <div class="external-link-card">
           <div class="external-link-card-title">Discuss this tool</div>
@@ -872,7 +710,9 @@
       searchHistory: [],
       inventory: {},
       inventoryFilterEnabled: true,
-      currentMode: 'normal'
+      currentMode: 'normal',
+      clearInventoryArmed: false,
+      clearInventoryArmTimer: null
     };
 
     const normalModeTab = document.getElementById('normalModeTab');
@@ -886,11 +726,11 @@
     const inventoryItemInput = document.getElementById('inventoryItemInput');
     const inventoryQtyInput = document.getElementById('inventoryQtyInput');
     const addInventoryBtn = document.getElementById('addInventoryBtn');
+    const incrementInventoryBtn = document.getElementById('incrementInventoryBtn');
     const clearInventoryBtn = document.getElementById('clearInventoryBtn');
-    const openInventoryModalBtn = document.getElementById('openInventoryModalBtn');
-    const closeInventoryModalBtn = document.getElementById('closeInventoryModalBtn');
-    const inventoryModalOverlay = document.getElementById('inventoryModalOverlay');
-    const inventorySummaryEl = document.getElementById('inventorySummary');
+    const inventorySearchBtn = document.getElementById('inventorySearchBtn');
+    const inventoryClearBtn = document.getElementById('inventoryClearBtn');
+    const inventoryFilterToggle = document.getElementById('inventoryFilterToggle');
     const inventoryListEl = document.getElementById('inventoryList');
     const allItemsDatalist = document.getElementById('allItemsDatalist');
     const searchBtn = document.getElementById('searchBtn');
@@ -940,20 +780,11 @@
       inventoryModePanel.classList.toggle('hidden', !inventoryActive);
 
       state.inventoryFilterEnabled = inventoryActive;
+      inventoryFilterToggle.checked = state.inventoryFilterEnabled;
+      inventoryFilterToggle.disabled = true;
 
       saveInventory();
       runSearch();
-    }
-
-    function openInventoryModal() {
-      inventoryModalOverlay.classList.remove('hidden');
-      inventoryModalOverlay.setAttribute('aria-hidden', 'false');
-      requestAnimationFrame(() => inventoryItemInput.focus());
-    }
-
-    function closeInventoryModal() {
-      inventoryModalOverlay.classList.add('hidden');
-      inventoryModalOverlay.setAttribute('aria-hidden', 'true');
     }
 
     function craftedStorageKey() {
@@ -1054,6 +885,7 @@
         state.inventoryFilterEnabled = false;
       }
 
+      inventoryFilterToggle.checked = state.inventoryFilterEnabled;
     }
 
     function saveInventory() {
@@ -1067,145 +899,34 @@
         .sort((a, b) => a[0].localeCompare(b[0]));
     }
 
-    function getUncraftedRecipesUsingIngredient(itemName) {
-      const canonical = canonicalizeItemName(itemName);
-      return state.recipes.filter(recipe => {
-        if (state.craftedRecipes.has(recipe.name)) return false;
-        return Array.isArray(recipe.ingredients) && recipe.ingredients.some(ingredient => canonicalizeItemName(ingredient) === canonical);
-      });
-    }
-
-    function getInventoryItemUsageInfo(itemName) {
-      const relatedRecipes = getUncraftedRecipesUsingIngredient(itemName);
-      const craftableNow = relatedRecipes.filter(recipe => recipeCraftableWithInventory(recipe));
-
-      if (craftableNow.length) {
-        return {
-          stateClass: 'inventory-item-ready',
-          badgeClass: 'ready',
-          badgeText: 'Craftable now',
-          noteText: 'Used in ' + craftableNow.length + ' recipe' + (craftableNow.length === 1 ? '' : 's') + ' you can craft right now.'
-        };
-      }
-
-      if (relatedRecipes.length) {
-        return {
-          stateClass: 'inventory-item-usable',
-          badgeClass: 'usable',
-          badgeText: 'Useful later',
-          noteText: 'Still needed in ' + relatedRecipes.length + ' uncrafted recipe' + (relatedRecipes.length === 1 ? '' : 's') + ', but you are missing other ingredients.'
-        };
-      }
-
-      return {
-        stateClass: 'inventory-item-unused',
-        badgeClass: 'unused',
-        badgeText: 'Safe to throw out',
-        noteText: 'Not used in any recipe you have not already crafted.'
-      };
-    }
-
-    function renderInventorySummary(entries) {
-      inventorySummaryEl.innerHTML = '';
-
-      const counts = {
-        ready: 0,
-        usable: 0,
-        unused: 0
-      };
-
-      for (const [name] of entries) {
-        const info = getInventoryItemUsageInfo(name);
-        if (info.badgeClass === 'ready') counts.ready += 1;
-        else if (info.badgeClass === 'usable') counts.usable += 1;
-        else counts.unused += 1;
-      }
-
-      const summaryItems = [
-        { label: 'Craft now', value: counts.ready },
-        { label: 'Keep for later', value: counts.usable },
-        { label: 'Throw out', value: counts.unused }
-      ];
-
-      for (const item of summaryItems) {
-        const box = document.createElement('div');
-        box.className = 'inventory-summary-box';
-
-        const label = document.createElement('div');
-        label.className = 'inventory-summary-label';
-        label.textContent = item.label;
-
-        const value = document.createElement('div');
-        value.className = 'inventory-summary-value';
-        value.textContent = item.value;
-
-        box.appendChild(label);
-        box.appendChild(value);
-        inventorySummaryEl.appendChild(box);
-      }
-    }
-
     function renderInventoryList() {
       inventoryListEl.innerHTML = '';
       const entries = getInventoryEntries();
-      renderInventorySummary(entries);
 
       if (!entries.length) {
         const empty = document.createElement('div');
         empty.className = 'empty';
         empty.style.marginTop = '0';
-        empty.style.gridColumn = '1 / -1';
         empty.textContent = 'No ingredients added yet.';
         inventoryListEl.appendChild(empty);
         return;
       }
 
       for (const [name, qty] of entries) {
-        const info = getInventoryItemUsageInfo(name);
+        const row = document.createElement('div');
+        row.className = 'inventory-item';
 
-        const card = document.createElement('div');
-        card.className = 'inventory-item ' + info.stateClass;
-
-        const top = document.createElement('div');
-        top.className = 'inventory-item-top';
-
+        const left = document.createElement('div');
         const title = document.createElement('div');
         title.className = 'inventory-item-name';
         title.textContent = name;
 
-        const qtyEl = document.createElement('div');
-        qtyEl.className = 'inventory-item-qty';
-        qtyEl.textContent = qty + 'x';
+        const sub = document.createElement('div');
+        sub.className = 'inventory-item-qty';
+        sub.textContent = qty + 'x';
 
-        top.appendChild(title);
-        top.appendChild(qtyEl);
-
-        const meta = document.createElement('div');
-        meta.className = 'inventory-item-meta';
-
-        const badge = document.createElement('span');
-        badge.className = 'inventory-item-badge ' + info.badgeClass;
-        badge.textContent = info.badgeText;
-        meta.appendChild(badge);
-
-        const note = document.createElement('div');
-        note.className = 'inventory-item-note';
-        note.textContent = info.noteText;
-
-        const incrementBtn = document.createElement('button');
-        incrementBtn.type = 'button';
-        incrementBtn.className = 'inventory-remove';
-        incrementBtn.textContent = '+';
-        incrementBtn.addEventListener('click', () => {
-          const inputQty = parseInt(inventoryQtyInput.value, 10);
-          const addAmount = Number.isFinite(inputQty) && inputQty > 0 ? inputQty : 1;
-
-          state.inventory[name] = (state.inventory[name] || 0) + addAmount;
-
-          saveInventory();
-          renderInventoryList();
-          runSearch();
-        });
+        left.appendChild(title);
+        left.appendChild(sub);
 
         const removeBtn = document.createElement('button');
         removeBtn.type = 'button';
@@ -1218,11 +939,9 @@
           runSearch();
         });
 
-        card.appendChild(top);
-        card.appendChild(meta);
-        card.appendChild(note);
-        card.appendChild(removeBtn);
-        inventoryListEl.appendChild(card);
+        row.appendChild(left);
+        row.appendChild(removeBtn);
+        inventoryListEl.appendChild(row);
       }
     }
 
@@ -1268,6 +987,52 @@
       return raw;
     }
 
+    function getInventoryQtyInputValue() {
+      const qty = getInventoryQtyInputValue();
+      return Number.isFinite(qty) && qty > 0 ? qty : 1;
+    }
+
+    function disarmClearInventoryButton() {
+      state.clearInventoryArmed = false;
+      if (state.clearInventoryArmTimer) {
+        clearTimeout(state.clearInventoryArmTimer);
+        state.clearInventoryArmTimer = null;
+      }
+      clearInventoryBtn.textContent = 'Clear ingredients';
+      clearInventoryBtn.classList.remove('danger');
+    }
+
+    function armClearInventoryButton() {
+      state.clearInventoryArmed = true;
+      clearInventoryBtn.textContent = 'Click again to confirm';
+      clearInventoryBtn.classList.add('danger');
+      if (state.clearInventoryArmTimer) {
+        clearTimeout(state.clearInventoryArmTimer);
+      }
+      state.clearInventoryArmTimer = setTimeout(() => {
+        disarmClearInventoryButton();
+      }, 4000);
+    }
+
+    function incrementSelectedInventoryItem() {
+      const itemName = canonicalizeItemName(inventoryItemInput.value);
+      const qty = getInventoryQtyInputValue();
+
+      if (!itemName) {
+        setStatus('Enter an ingredient name first.', 'error');
+        return;
+      }
+
+      state.inventory[itemName] = Number(state.inventory[itemName] || 0) + qty;
+      saveInventory();
+      renderInventoryList();
+      inventoryItemInput.value = '';
+      inventoryQtyInput.value = '1';
+      disarmClearInventoryButton();
+      setStatus('Incremented your ingredient quantity.', 'empty');
+      runSearch();
+    }
+
     function addOrUpdateInventoryItem() {
       const itemName = canonicalizeItemName(inventoryItemInput.value);
       const qty = Number.parseInt(String(inventoryQtyInput.value || '').trim(), 10);
@@ -1286,15 +1051,23 @@
       renderInventoryList();
       inventoryItemInput.value = '';
       inventoryQtyInput.value = '1';
+      disarmClearInventoryButton();
       setStatus('Updated your ingredient list.', 'empty');
       runSearch();
     }
 
     function clearInventory() {
+      if (!state.clearInventoryArmed) {
+        armClearInventoryButton();
+        setStatus('Click "Clear ingredients" again within 4 seconds to confirm.', 'error');
+        return;
+      }
+
       state.inventory = {};
       saveInventory();
       renderInventoryList();
-      openInventoryModal();
+      disarmClearInventoryButton();
+      setStatus('Cleared all ingredients from your inventory.', 'empty');
       runSearch();
     }
 
@@ -1780,6 +1553,7 @@
       }
 
       const activeSortSelect = state.currentMode === 'inventory' ? inventorySortMode : sortMode;
+      const activeTierSelect = state.currentMode === 'inventory' ? inventoryPartnerTierFilter : partnerTierFilter;
 
       const modePill = document.createElement('span');
       modePill.className = 'pill';
@@ -1791,12 +1565,10 @@
       sortPill.textContent = 'Sort: ' + activeSortSelect.options[activeSortSelect.selectedIndex].text;
       activeFiltersEl.appendChild(sortPill);
 
-      if (state.currentMode === 'normal') {
-        const tierPill = document.createElement('span');
-        tierPill.className = 'pill';
-        tierPill.textContent = 'Other ingredient tier: ' + partnerTierFilter.options[partnerTierFilter.selectedIndex].text;
-        activeFiltersEl.appendChild(tierPill);
-      }
+      const tierPill = document.createElement('span');
+      tierPill.className = 'pill';
+      tierPill.textContent = 'Other ingredient tier: ' + activeTierSelect.options[activeTierSelect.selectedIndex].text;
+      activeFiltersEl.appendChild(tierPill);
 
       if (state.currentMode === 'inventory' && state.inventoryFilterEnabled) {
         const inventoryPill = document.createElement('span');
@@ -1958,10 +1730,6 @@
         matches = matches.filter(recipe => state.craftedRecipes.has(recipe.name));
       }
 
-      if (state.currentMode === 'inventory' && !state.craftedViewOnly) {
-        matches = matches.filter(recipe => !state.craftedRecipes.has(recipe.name));
-      }
-
       if (state.currentMode === 'inventory' && state.inventoryFilterEnabled && !state.craftedViewOnly) {
         matches = matches.filter(recipe => recipeCraftableWithInventory(recipe));
       }
@@ -1978,6 +1746,7 @@
       inventorySortMode.value = 'tier-asc';
       state.craftedViewOnly = false;
       state.inventoryFilterEnabled = state.currentMode === 'inventory';
+      inventoryFilterToggle.checked = state.inventoryFilterEnabled;
 
       if (state.rawData) {
         state.filtered = sortRecipes([...state.recipes], currentSortModeValue(), '');
@@ -2043,15 +1812,13 @@
       addOrUpdateInventoryItem();
     });
     clearInventoryBtn.addEventListener('click', clearInventory);
-    openInventoryModalBtn.addEventListener('click', openInventoryModal);
-    closeInventoryModalBtn.addEventListener('click', closeInventoryModal);
-    inventoryModalOverlay.addEventListener('click', (e) => {
-      if (e.target === inventoryModalOverlay) closeInventoryModal();
+    inventorySearchBtn.addEventListener('click', () => {
+      setMode('inventory');
+      runSearch();
     });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !inventoryModalOverlay.classList.contains('hidden')) {
-        closeInventoryModal();
-      }
+    inventoryClearBtn.addEventListener('click', () => {
+      setMode('inventory');
+      clearSearch();
     });
     inventoryItemInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
