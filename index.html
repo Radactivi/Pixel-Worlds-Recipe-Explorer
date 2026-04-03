@@ -793,10 +793,17 @@
       if (mode === 'all' || !searchQuery) return true;
 
       const details = getMatchingAndOtherIngredients(recipe, searchQuery);
-      if (!details.matchingIngredients.length || !details.otherIngredients.length) return false;
+
+      if (!details.matchingIngredients.length) {
+        return true;
+      }
 
       if (mode === '1-4') {
-        return details.otherIngredients.some(other => {
+        const partnerIngredients = details.otherIngredients.length
+          ? details.otherIngredients
+          : recipe.ingredients;
+
+        return partnerIngredients.some(other => {
           const tier = getTierForItemName(other);
           return tier !== null && tier >= 1 && tier <= 4;
         });
@@ -812,8 +819,17 @@
 
     function isDirectMatchFilteredOut(matchItemName, searchQuery) {
       if (partnerTierFilter.value !== '1-4' || !searchQuery) return false;
-      const recipe = getRecipeByName(matchItemName);
-      return !!(recipe && Array.isArray(recipe.ingredients) && recipe.ingredients.length && isFilteredOutByPartnerTier(recipe, searchQuery));
+
+      const matchingRecipeInResults = state.filtered.find(
+        recipe => normalize(recipe.name) === normalize(matchItemName)
+      );
+
+      return !!(
+        matchingRecipeInResults &&
+        Array.isArray(matchingRecipeInResults.ingredients) &&
+        matchingRecipeInResults.ingredients.length &&
+        isFilteredOutByPartnerTier(matchingRecipeInResults, searchQuery)
+      );
     }
 
     function sortRecipes(list, mode, searchQuery) {
