@@ -714,6 +714,7 @@
                 </div>
                 <div class="inventory-actions">
                   <button id="addInventoryBtn" type="button" class="secondary">Add / Update</button>
+                  <button id="incrementInventoryBtn" type="button" class="secondary">Increment</button>
                   <button id="clearInventoryBtn" type="button" class="secondary">Clear ingredients</button>
                 </div>
               </div>
@@ -952,12 +953,14 @@
     }
 
     function openInventoryModal() {
+      disarmClearInventoryButton();
       inventoryModalOverlay.classList.remove('hidden');
       inventoryModalOverlay.setAttribute('aria-hidden', 'false');
       requestAnimationFrame(() => inventoryItemInput.focus());
     }
 
     function closeInventoryModal() {
+      disarmClearInventoryButton();
       inventoryModalOverlay.classList.add('hidden');
       inventoryModalOverlay.setAttribute('aria-hidden', 'true');
     }
@@ -1329,10 +1332,18 @@
     }
 
     function clearInventory() {
+      if (!state.clearInventoryArmed) {
+        armClearInventoryButton();
+        setStatus('Click "Clear ingredients" again within 4 seconds to confirm.', 'error');
+        return;
+      }
+
       state.inventory = {};
       saveInventory();
       renderInventoryList();
+      disarmClearInventoryButton();
       openInventoryModal();
+      setStatus('Cleared all ingredients from your inventory.', 'empty');
       runSearch();
     }
 
