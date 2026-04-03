@@ -487,6 +487,7 @@
           <select id="partnerTierFilter">
             <option value="all">All</option>
             <option value="1-4">Tier 1-4 only</option>
+            <option value="5-11">Tier 5-11 only</option>
           </select>
         </div>
 
@@ -798,14 +799,21 @@
         return true;
       }
 
-      if (mode === '1-4') {
+      if (mode === '1-4' || mode === '5-11') {
         const partnerIngredients = details.otherIngredients.length
           ? details.otherIngredients
           : recipe.ingredients;
 
         return partnerIngredients.some(other => {
           const tier = getTierForItemName(other);
-          return tier !== null && tier >= 1 && tier <= 4;
+          if (tier === null) return false;
+
+          if (mode === '1-4') {
+            return tier >= 1 && tier <= 4;
+          } else if (mode === '5-11') {
+            return tier >= 5 && tier <= 11;
+          }
+          return true;
         });
       }
 
@@ -813,7 +821,7 @@
     }
 
     function isFilteredOutByPartnerTier(recipe, searchQuery) {
-      if (partnerTierFilter.value !== '1-4' || !searchQuery) return false;
+      if ((partnerTierFilter.value !== '1-4' && partnerTierFilter.value !== '5-11') || !searchQuery) return false;
       return !passesPartnerTierFilter(recipe, searchQuery);
     }
 
