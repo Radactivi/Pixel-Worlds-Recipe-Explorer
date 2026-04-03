@@ -134,6 +134,30 @@
     .search-history-item:hover {
       background: rgba(30, 41, 59, 0.75);
     }
+    .mode-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .mode-tab {
+      border: 1px solid var(--border);
+      background: #1e293b;
+      color: var(--muted);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+    .mode-tab.active {
+      background: rgba(34, 197, 94, 0.16);
+      color: var(--text);
+      border-color: rgba(34, 197, 94, 0.45);
+    }
+    .mode-panel.hidden {
+      display: none;
+    }
     .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
     .external-link-card {
       margin-top: 14px;
@@ -164,6 +188,218 @@
     .external-link-button:hover {
       background: #263449;
       text-decoration: none;
+    }
+    .inventory-controls {
+      display: grid;
+      grid-template-columns: 1fr 92px;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .inventory-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .inventory-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .inventory-summary-box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.72);
+      padding: 10px 12px;
+    }
+    .inventory-summary-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .inventory-summary-value {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .inventory-modal-trigger {
+      width: 100%;
+      justify-content: center;
+    }
+    .inventory-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.72);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 10000;
+    }
+    .inventory-modal-overlay.hidden {
+      display: none;
+    }
+    .inventory-modal {
+      width: min(980px, 100%);
+      max-height: min(86vh, 900px);
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: rgba(17, 24, 39, 0.98);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+      padding: 18px;
+    }
+    .inventory-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .inventory-modal-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+    .inventory-modal-sub {
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin-top: 3px;
+    }
+    .inventory-close-btn {
+      border: 1px solid var(--border);
+      background: #1e293b;
+      color: var(--text);
+      min-width: auto;
+    }
+    .inventory-modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .inventory-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 10px;
+      margin-top: 0;
+    }
+    .inventory-item {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 134px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.82);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+    .inventory-item.inventory-item-ready {
+      border-color: rgba(34, 197, 94, 0.45);
+      background: rgba(20, 83, 45, 0.28);
+    }
+    .inventory-item.inventory-item-usable {
+      border-color: rgba(96, 165, 250, 0.36);
+      background: rgba(30, 41, 59, 0.9);
+    }
+    .inventory-item.inventory-item-unused {
+      border-color: rgba(239, 68, 68, 0.35);
+      background: rgba(69, 10, 10, 0.22);
+    }
+    .inventory-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .inventory-item-name {
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.25;
+      word-break: break-word;
+    }
+    .inventory-item-qty {
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+      white-space: nowrap;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: rgba(15, 23, 42, 0.95);
+    }
+    .inventory-item-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .inventory-item-badge {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--muted);
+    }
+    .inventory-item-badge.ready {
+      color: #bbf7d0;
+      border-color: rgba(34, 197, 94, 0.4);
+      background: rgba(20, 83, 45, 0.42);
+    }
+    .inventory-item-badge.usable {
+      color: #bfdbfe;
+      border-color: rgba(96, 165, 250, 0.4);
+      background: rgba(30, 64, 175, 0.18);
+    }
+    .inventory-item-badge.unused {
+      color: #fecaca;
+      border-color: rgba(239, 68, 68, 0.36);
+      background: rgba(127, 29, 29, 0.28);
+    }
+    .inventory-item-note {
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.35;
+      flex: 1;
+    }
+    .inventory-remove {
+      border: 0;
+      background: transparent;
+      color: #fca5a5;
+      cursor: pointer;
+      font-weight: 700;
+      padding: 0;
+      min-width: auto;
+      align-self: flex-start;
+    }
+    .inventory-remove:hover {
+      text-decoration: underline;
+      background: transparent;
+    }
+    .inventory-help {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+    .inventory-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      cursor: pointer;
+      user-select: none;
+      margin-top: 10px;
+    }
+    .inventory-toggle input {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
     }
     button {
       border: 0;
@@ -288,6 +524,19 @@
       user-select: none;
     }
     .crafted-toggle input { width: 16px; height: 16px; cursor: pointer; }
+    .craft-action-btn {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #1e293b;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.84rem;
+    }
+    .craft-action-btn:hover {
+      background: #263449;
+    }
     .ingredients {
       display: flex;
       flex-wrap: wrap;
@@ -435,9 +684,44 @@
       .matched-sidebar { order: 2; }
       .results-panel { order: 3; }
       .wrap { padding: 16px; }
+      .inventory-modal {
+        padding: 14px;
+      }
+      .inventory-summary {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BDCQ8G5L7R"></script>
+
+        <div id="inventoryModalOverlay" class="inventory-modal-overlay hidden" aria-hidden="true">
+          <div class="inventory-modal" role="dialog" aria-modal="true" aria-labelledby="inventoryModalTitle">
+            <div class="inventory-modal-header">
+              <div>
+                <div id="inventoryModalTitle" class="inventory-modal-title">Inventory</div>
+                <div class="inventory-modal-sub">Green = craft now, blue = keep for later, red = safe to throw out.</div>
+              </div>
+              <button id="closeInventoryModalBtn" type="button" class="inventory-close-btn">Close</button>
+            </div>
+            <div class="inventory-modal-body">
+              <div class="field" style="margin-bottom: 16px;">
+                <label for="inventoryItemInput">Add ingredients</label>
+                <div class="inventory-controls">
+                  <input id="inventoryItemInput" type="text" placeholder="Example: Soil Block" list="allItemsDatalist" autocomplete="off" />
+                  <input id="inventoryQtyInput" type="text" inputmode="numeric" placeholder="Qty" value="1" />
+                </div>
+                <div class="inventory-actions">
+                  <button id="addInventoryBtn" type="button" class="secondary">Add / Update</button>
+                  <button id="clearInventoryBtn" type="button" class="secondary">Clear ingredients</button>
+                </div>
+              </div>
+              <div id="inventorySummary" class="inventory-summary"></div>
+              <div id="inventoryList" class="inventory-list"></div>
+            </div>
+          </div>
+        </div>
+
+
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -460,46 +744,79 @@
     <div class="grid">
       <div class="card sidebar">
         <h2 class="section-title">Data</h2>
-        <div class="field">
-          <label for="searchInput">Search ingredients / blocks</label>
-          <input id="searchInput" type="text" placeholder="Example: Pink Jelly or Soil Block" autocomplete="off" />
-          <div id="searchHistory" class="search-history hidden">
-            <div class="search-history-header">
-              <span>Recent searches</span>
-              <button id="clearHistoryBtn" type="button" class="search-history-clear">Clear</button>
+
+        <div class="mode-tabs">
+          <button id="normalModeTab" type="button" class="mode-tab active">Normal search</button>
+          <button id="inventoryModeTab" type="button" class="mode-tab">Inventory crafting</button>
+        </div>
+
+        <div id="normalModePanel" class="mode-panel">
+          <div class="field">
+            <label for="searchInput">Search ingredients / blocks</label>
+            <input id="searchInput" type="text" placeholder="Example: Pink Jelly or Soil Block" autocomplete="off" />
+            <div id="searchHistory" class="search-history hidden">
+              <div class="search-history-header">
+                <span>Recent searches</span>
+                <button id="clearHistoryBtn" type="button" class="search-history-clear">Clear</button>
+              </div>
+              <div id="searchHistoryList" class="search-history-list"></div>
             </div>
-            <div id="searchHistoryList" class="search-history-list"></div>
+          </div>
+
+          <div class="field">
+            <label for="sortMode">Sort results by</label>
+            <select id="sortMode">
+              <option value="tier-asc">Tier ascending</option>
+              <option value="tier-desc">Tier descending</option>
+              <option value="name-asc">Name A-Z</option>
+              <option value="name-desc">Name Z-A</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="partnerTierFilter">Other ingredient tier filter</label>
+            <select id="partnerTierFilter">
+              <option value="all">All</option>
+              <option value="1-4">Tier 1-4 only</option>
+              <option value="5-11">Tier 5-11 only</option>
+            </select>
+          </div>
+
+          <div class="btn-row">
+            <button id="searchBtn">Search</button>
+            <button id="clearBtn" class="secondary">Clear</button>
           </div>
         </div>
 
-        <div class="field">
-          <label for="sortMode">Sort results by</label>
-          <select id="sortMode">
-            <option value="tier-asc">Tier ascending</option>
-            <option value="tier-desc">Tier descending</option>
-            <option value="name-asc">Name A-Z</option>
-            <option value="name-desc">Name Z-A</option>
-          </select>
-        </div>
+        <div id="inventoryModePanel" class="mode-panel hidden">
+          <div class="field">
+            <div class="inventory-help">
+              Open the inventory window to add ingredients, check what you can craft now, see what is still useful later, and identify what is safe to throw out.
+            </div>
+            <div class="inventory-actions" style="margin-top: 12px;">
+              <button id="openInventoryModalBtn" type="button" class="secondary inventory-modal-trigger">Open inventory</button>
+            </div>
+            <datalist id="allItemsDatalist"></datalist>
+          </div>
 
-        <div class="field">
-          <label for="partnerTierFilter">Other ingredient tier filter</label>
-          <select id="partnerTierFilter">
-            <option value="all">All</option>
-            <option value="1-4">Tier 1-4 only</option>
-            <option value="5-11">Tier 5-11 only</option>
-          </select>
-        </div>
+          <div class="field">
+            <label for="inventorySortMode">Sort craftable results by</label>
+            <select id="inventorySortMode">
+              <option value="tier-asc">Tier ascending</option>
+              <option value="tier-desc">Tier descending</option>
+              <option value="name-asc">Name A-Z</option>
+              <option value="name-desc">Name Z-A</option>
+            </select>
+          </div>
 
-        <div class="btn-row">
-          <button id="searchBtn">Search</button>
-          <button id="clearBtn" class="secondary">Clear</button>
         </div>
 
         <div id="status" class="empty" style="margin-top:16px;">Loading recipe data…</div>
         <div class="muted" style="margin-top: 12px; font-size: 0.88rem; line-height: 1.5;">
           Thanks for visiting! This website was created by Pixel Worlds user "Meme" (world name "Taken")
         </div>
+
+
 
         <div class="external-link-card">
           <div class="external-link-card-title">Discuss this tool</div>
@@ -552,12 +869,30 @@
       craftedRecipes: new Set(),
       tierMap: {},
       craftedViewOnly: false,
-      searchHistory: []
+      searchHistory: [],
+      inventory: {},
+      inventoryFilterEnabled: true,
+      currentMode: 'normal'
     };
 
+    const normalModeTab = document.getElementById('normalModeTab');
+    const inventoryModeTab = document.getElementById('inventoryModeTab');
+    const normalModePanel = document.getElementById('normalModePanel');
+    const inventoryModePanel = document.getElementById('inventoryModePanel');
     const searchInput = document.getElementById('searchInput');
     const sortMode = document.getElementById('sortMode');
     const partnerTierFilter = document.getElementById('partnerTierFilter');
+    const inventorySortMode = document.getElementById('inventorySortMode');
+    const inventoryItemInput = document.getElementById('inventoryItemInput');
+    const inventoryQtyInput = document.getElementById('inventoryQtyInput');
+    const addInventoryBtn = document.getElementById('addInventoryBtn');
+    const clearInventoryBtn = document.getElementById('clearInventoryBtn');
+    const openInventoryModalBtn = document.getElementById('openInventoryModalBtn');
+    const closeInventoryModalBtn = document.getElementById('closeInventoryModalBtn');
+    const inventoryModalOverlay = document.getElementById('inventoryModalOverlay');
+    const inventorySummaryEl = document.getElementById('inventorySummary');
+    const inventoryListEl = document.getElementById('inventoryList');
+    const allItemsDatalist = document.getElementById('allItemsDatalist');
     const searchBtn = document.getElementById('searchBtn');
     const clearBtn = document.getElementById('clearBtn');
     const searchHistoryEl = document.getElementById('searchHistory');
@@ -585,6 +920,40 @@
 
     function normalize(value) {
       return String(value || '').trim().toLowerCase();
+    }
+
+    function currentSortModeValue() {
+      return state.currentMode === 'inventory' ? inventorySortMode.value : sortMode.value;
+    }
+
+    function currentPartnerTierFilterValue() {
+      return state.currentMode === 'inventory' ? 'all' : partnerTierFilter.value;
+    }
+
+    function setMode(mode) {
+      state.currentMode = mode === 'inventory' ? 'inventory' : 'normal';
+      const inventoryActive = state.currentMode === 'inventory';
+
+      normalModeTab.classList.toggle('active', !inventoryActive);
+      inventoryModeTab.classList.toggle('active', inventoryActive);
+      normalModePanel.classList.toggle('hidden', inventoryActive);
+      inventoryModePanel.classList.toggle('hidden', !inventoryActive);
+
+      state.inventoryFilterEnabled = inventoryActive;
+
+      saveInventory();
+      runSearch();
+    }
+
+    function openInventoryModal() {
+      inventoryModalOverlay.classList.remove('hidden');
+      inventoryModalOverlay.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(() => inventoryItemInput.focus());
+    }
+
+    function closeInventoryModal() {
+      inventoryModalOverlay.classList.add('hidden');
+      inventoryModalOverlay.setAttribute('aria-hidden', 'true');
     }
 
     function craftedStorageKey() {
@@ -660,6 +1029,367 @@
 
     function hideSearchHistory() {
       searchHistoryEl.classList.add('hidden');
+    }
+
+    function inventoryStorageKey() {
+      return 'pw-inventory';
+    }
+
+    function inventoryFilterStorageKey() {
+      return 'pw-inventory-filter-enabled';
+    }
+
+    function loadInventory() {
+      try {
+        const raw = localStorage.getItem(inventoryStorageKey());
+        const parsed = raw ? JSON.parse(raw) : {};
+        state.inventory = parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+      } catch (error) {
+        state.inventory = {};
+      }
+
+      try {
+        state.inventoryFilterEnabled = localStorage.getItem(inventoryFilterStorageKey()) === 'true';
+      } catch (error) {
+        state.inventoryFilterEnabled = false;
+      }
+
+    }
+
+    function saveInventory() {
+      localStorage.setItem(inventoryStorageKey(), JSON.stringify(state.inventory));
+      localStorage.setItem(inventoryFilterStorageKey(), String(state.inventoryFilterEnabled));
+    }
+
+    function getInventoryEntries() {
+      return Object.entries(state.inventory)
+        .filter(([name, qty]) => typeof name === 'string' && Number(qty) > 0)
+        .sort((a, b) => a[0].localeCompare(b[0]));
+    }
+
+    function getUncraftedRecipesUsingIngredient(itemName) {
+      const canonical = canonicalizeItemName(itemName);
+      return state.recipes.filter(recipe => {
+        if (state.craftedRecipes.has(recipe.name)) return false;
+        return Array.isArray(recipe.ingredients) && recipe.ingredients.some(ingredient => canonicalizeItemName(ingredient) === canonical);
+      });
+    }
+
+    function getInventoryItemUsageInfo(itemName) {
+      const relatedRecipes = getUncraftedRecipesUsingIngredient(itemName);
+      const craftableNow = relatedRecipes.filter(recipe => recipeCraftableWithInventory(recipe));
+
+      if (craftableNow.length) {
+        return {
+          stateClass: 'inventory-item-ready',
+          badgeClass: 'ready',
+          badgeText: 'Craftable now',
+          noteText: 'Used in ' + craftableNow.length + ' recipe' + (craftableNow.length === 1 ? '' : 's') + ' you can craft right now.'
+        };
+      }
+
+      if (relatedRecipes.length) {
+        return {
+          stateClass: 'inventory-item-usable',
+          badgeClass: 'usable',
+          badgeText: 'Useful later',
+          noteText: 'Still needed in ' + relatedRecipes.length + ' uncrafted recipe' + (relatedRecipes.length === 1 ? '' : 's') + ', but you are missing other ingredients.'
+        };
+      }
+
+      return {
+        stateClass: 'inventory-item-unused',
+        badgeClass: 'unused',
+        badgeText: 'Safe to throw out',
+        noteText: 'Not used in any recipe you have not already crafted.'
+      };
+    }
+
+    function renderInventorySummary(entries) {
+      inventorySummaryEl.innerHTML = '';
+
+      const counts = {
+        ready: 0,
+        usable: 0,
+        unused: 0
+      };
+
+      for (const [name] of entries) {
+        const info = getInventoryItemUsageInfo(name);
+        if (info.badgeClass === 'ready') counts.ready += 1;
+        else if (info.badgeClass === 'usable') counts.usable += 1;
+        else counts.unused += 1;
+      }
+
+      const summaryItems = [
+        { label: 'Craft now', value: counts.ready },
+        { label: 'Keep for later', value: counts.usable },
+        { label: 'Throw out', value: counts.unused }
+      ];
+
+      for (const item of summaryItems) {
+        const box = document.createElement('div');
+        box.className = 'inventory-summary-box';
+
+        const label = document.createElement('div');
+        label.className = 'inventory-summary-label';
+        label.textContent = item.label;
+
+        const value = document.createElement('div');
+        value.className = 'inventory-summary-value';
+        value.textContent = item.value;
+
+        box.appendChild(label);
+        box.appendChild(value);
+        inventorySummaryEl.appendChild(box);
+      }
+    }
+
+    function renderInventoryList() {
+      inventoryListEl.innerHTML = '';
+      const entries = getInventoryEntries();
+      renderInventorySummary(entries);
+
+      if (!entries.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.style.marginTop = '0';
+        empty.style.gridColumn = '1 / -1';
+        empty.textContent = 'No ingredients added yet.';
+        inventoryListEl.appendChild(empty);
+        return;
+      }
+
+      for (const [name, qty] of entries) {
+        const info = getInventoryItemUsageInfo(name);
+
+        const card = document.createElement('div');
+        card.className = 'inventory-item ' + info.stateClass;
+
+        const top = document.createElement('div');
+        top.className = 'inventory-item-top';
+
+        const title = document.createElement('div');
+        title.className = 'inventory-item-name';
+        title.textContent = name;
+
+        const qtyEl = document.createElement('div');
+        qtyEl.className = 'inventory-item-qty';
+        qtyEl.textContent = qty + 'x';
+
+        top.appendChild(title);
+        top.appendChild(qtyEl);
+
+        const meta = document.createElement('div');
+        meta.className = 'inventory-item-meta';
+
+        const badge = document.createElement('span');
+        badge.className = 'inventory-item-badge ' + info.badgeClass;
+        badge.textContent = info.badgeText;
+        meta.appendChild(badge);
+
+        const note = document.createElement('div');
+        note.className = 'inventory-item-note';
+        note.textContent = info.noteText;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'inventory-remove';
+        removeBtn.textContent = 'Remove';
+        removeBtn.addEventListener('click', () => {
+          delete state.inventory[name];
+          saveInventory();
+          renderInventoryList();
+          runSearch();
+        });
+
+        card.appendChild(top);
+        card.appendChild(meta);
+        card.appendChild(note);
+        card.appendChild(removeBtn);
+        inventoryListEl.appendChild(card);
+      }
+    }
+
+    function populateItemDatalist() {
+      allItemsDatalist.innerHTML = '';
+      if (!state.rawData || !state.rawData.tiers) return;
+
+      const seen = new Set();
+      const allNames = [];
+      for (const items of Object.values(state.rawData.tiers)) {
+        if (!Array.isArray(items)) continue;
+        for (const item of items) {
+          const key = normalize(item);
+          if (!seen.has(key)) {
+            seen.add(key);
+            allNames.push(item);
+          }
+        }
+      }
+
+      allNames.sort((a, b) => a.localeCompare(b));
+
+      for (const name of allNames) {
+        const option = document.createElement('option');
+        option.value = name;
+        allItemsDatalist.appendChild(option);
+      }
+    }
+
+    function canonicalizeItemName(name) {
+      const raw = String(name || '').trim();
+      if (!raw) return '';
+      if (!state.rawData || !state.rawData.tiers) return raw;
+
+      for (const items of Object.values(state.rawData.tiers)) {
+        if (!Array.isArray(items)) continue;
+        for (const item of items) {
+          if (normalize(item) === normalize(raw)) {
+            return item;
+          }
+        }
+      }
+      return raw;
+    }
+
+    function addOrUpdateInventoryItem() {
+      const itemName = canonicalizeItemName(inventoryItemInput.value);
+      const qty = Number.parseInt(String(inventoryQtyInput.value || '').trim(), 10);
+
+      if (!itemName) {
+        setStatus('Enter an ingredient name first.', 'error');
+        return;
+      }
+      if (!Number.isFinite(qty) || qty < 1) {
+        setStatus('Quantity must be 1 or higher.', 'error');
+        return;
+      }
+
+      state.inventory[itemName] = qty;
+      saveInventory();
+      renderInventoryList();
+      inventoryItemInput.value = '';
+      inventoryQtyInput.value = '1';
+      setStatus('Updated your ingredient list.', 'empty');
+      runSearch();
+    }
+
+    function clearInventory() {
+      state.inventory = {};
+      saveInventory();
+      renderInventoryList();
+      openInventoryModal();
+      runSearch();
+    }
+
+    function recipeCraftableWithInventory(recipe) {
+      if (!Array.isArray(recipe.ingredients) || !recipe.ingredients.length) return false;
+
+      const counts = {};
+      for (const ingredient of recipe.ingredients) {
+        const canonical = canonicalizeItemName(ingredient);
+        counts[canonical] = (counts[canonical] || 0) + 1;
+      }
+
+      for (const [ingredient, needed] of Object.entries(counts)) {
+        const available = Number(state.inventory[ingredient] || 0);
+        if (available < needed) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    function getRecipeIngredientCounts(recipe) {
+      const counts = {};
+      if (!Array.isArray(recipe.ingredients)) return counts;
+
+      for (const ingredient of recipe.ingredients) {
+        const canonical = canonicalizeItemName(ingredient);
+        counts[canonical] = (counts[canonical] || 0) + 1;
+      }
+
+      return counts;
+    }
+
+    function deductRecipeIngredientsFromInventory(recipe) {
+      const counts = getRecipeIngredientCounts(recipe);
+
+      for (const [ingredient, needed] of Object.entries(counts)) {
+        const available = Number(state.inventory[ingredient] || 0);
+        const nextValue = Math.max(0, available - needed);
+        if (nextValue > 0) {
+          state.inventory[ingredient] = nextValue;
+        } else {
+          delete state.inventory[ingredient];
+        }
+      }
+    }
+
+    function restoreRecipeIngredientsToInventory(recipe) {
+      const counts = getRecipeIngredientCounts(recipe);
+
+      for (const [ingredient, needed] of Object.entries(counts)) {
+        const available = Number(state.inventory[ingredient] || 0);
+        state.inventory[ingredient] = available + needed;
+      }
+    }
+
+    function setRecipeCraftedState(recipeName, isCrafted, recipeObj) {
+      const recipe = recipeObj || getRecipeByName(recipeName);
+      if (!recipe) return;
+
+      if (isCrafted) {
+        state.craftedRecipes.add(recipe.name);
+        if (state.inventoryFilterEnabled) {
+          deductRecipeIngredientsFromInventory(recipe);
+          saveInventory();
+          renderInventoryList();
+        }
+      } else {
+        state.craftedRecipes.delete(recipe.name);
+        if (state.inventoryFilterEnabled) {
+          restoreRecipeIngredientsToInventory(recipe);
+          saveInventory();
+          renderInventoryList();
+        }
+      }
+
+      saveCraftedRecipes();
+    }
+
+    function buildCraftActionElement(recipe, crafted) {
+      if (state.currentMode === 'inventory') {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'craft-action-btn';
+        btn.textContent = crafted ? 'Undo craft' : 'Craft';
+        btn.addEventListener('click', () => {
+          setRecipeCraftedState(recipe.name, !crafted, recipe);
+          runSearch();
+        });
+        return btn;
+      }
+
+      const craftedLabel = document.createElement('label');
+      craftedLabel.className = 'crafted-toggle';
+
+      const craftedCheckbox = document.createElement('input');
+      craftedCheckbox.type = 'checkbox';
+      craftedCheckbox.checked = crafted;
+      craftedCheckbox.addEventListener('change', () => {
+        setRecipeCraftedState(recipe.name, craftedCheckbox.checked, recipe);
+        runSearch();
+      });
+
+      const craftedText = document.createElement('span');
+      craftedText.textContent = 'Crafted';
+
+      craftedLabel.appendChild(craftedCheckbox);
+      craftedLabel.appendChild(craftedText);
+      return craftedLabel;
     }
 
     function loadCraftedRecipes() {
@@ -790,7 +1520,7 @@
     }
 
     function passesPartnerTierFilter(recipe, searchQuery) {
-      const mode = partnerTierFilter.value;
+      const mode = currentPartnerTierFilterValue();
       if (mode === 'all' || !searchQuery) return true;
 
       const details = getMatchingAndOtherIngredients(recipe, searchQuery);
@@ -821,12 +1551,14 @@
     }
 
     function isFilteredOutByPartnerTier(recipe, searchQuery) {
-      if ((partnerTierFilter.value !== '1-4' && partnerTierFilter.value !== '5-11') || !searchQuery) return false;
+      const currentFilter = currentPartnerTierFilterValue();
+      if ((currentFilter !== '1-4' && currentFilter !== '5-11') || !searchQuery) return false;
       return !passesPartnerTierFilter(recipe, searchQuery);
     }
 
     function isDirectMatchFilteredOut(matchItemName, searchQuery) {
-      if (partnerTierFilter.value !== '1-4' || !searchQuery) return false;
+      const currentFilter = currentPartnerTierFilterValue();
+      if ((currentFilter !== '1-4' && currentFilter !== '5-11') || !searchQuery) return false;
 
       const matchingRecipeInResults = state.filtered.find(
         recipe => normalize(recipe.name) === normalize(matchItemName)
@@ -956,31 +1688,10 @@
         main.appendChild(makeIconElement(match.item));
         main.appendChild(titleWrap);
 
-        const craftedLabel = document.createElement('label');
-        craftedLabel.className = 'crafted-toggle';
-        craftedLabel.style.marginLeft = '8px';
-
-        const craftedCheckbox = document.createElement('input');
-        craftedCheckbox.type = 'checkbox';
-        craftedCheckbox.checked = crafted;
-        craftedCheckbox.addEventListener('change', () => {
-          if (craftedCheckbox.checked) {
-            state.craftedRecipes.add(match.item);
-          } else {
-            state.craftedRecipes.delete(match.item);
-          }
-          saveCraftedRecipes();
-          runSearch();
-        });
-
-        const craftedText = document.createElement('span');
-        craftedText.textContent = 'Crafted';
-
-        craftedLabel.appendChild(craftedCheckbox);
-        craftedLabel.appendChild(craftedText);
+        const craftedAction = buildCraftActionElement(match.recipe || getRecipeByName(match.item), crafted);
 
         top.appendChild(main);
-        top.appendChild(craftedLabel);
+        top.appendChild(craftedAction);
         item.appendChild(top);
 
         if (match.recipe && Array.isArray(match.recipe.ingredients) && match.recipe.ingredients.length) {
@@ -1053,15 +1764,31 @@
         activeFiltersEl.appendChild(pill);
       }
 
+      const activeSortSelect = state.currentMode === 'inventory' ? inventorySortMode : sortMode;
+
+      const modePill = document.createElement('span');
+      modePill.className = 'pill';
+      modePill.textContent = 'Mode: ' + (state.currentMode === 'inventory' ? 'Inventory crafting' : 'Normal search');
+      activeFiltersEl.appendChild(modePill);
+
       const sortPill = document.createElement('span');
       sortPill.className = 'pill';
-      sortPill.textContent = 'Sort: ' + sortMode.options[sortMode.selectedIndex].text;
+      sortPill.textContent = 'Sort: ' + activeSortSelect.options[activeSortSelect.selectedIndex].text;
       activeFiltersEl.appendChild(sortPill);
 
-      const tierPill = document.createElement('span');
-      tierPill.className = 'pill';
-      tierPill.textContent = 'Other ingredient tier: ' + partnerTierFilter.options[partnerTierFilter.selectedIndex].text;
-      activeFiltersEl.appendChild(tierPill);
+      if (state.currentMode === 'normal') {
+        const tierPill = document.createElement('span');
+        tierPill.className = 'pill';
+        tierPill.textContent = 'Other ingredient tier: ' + partnerTierFilter.options[partnerTierFilter.selectedIndex].text;
+        activeFiltersEl.appendChild(tierPill);
+      }
+
+      if (state.currentMode === 'inventory' && state.inventoryFilterEnabled) {
+        const inventoryPill = document.createElement('span');
+        inventoryPill.className = 'pill';
+        inventoryPill.textContent = 'Inventory filter: craftable only';
+        activeFiltersEl.appendChild(inventoryPill);
+      }
 
       const craftedPill = document.createElement('span');
       craftedPill.className = 'pill';
@@ -1079,7 +1806,9 @@
       if (state.craftedViewOnly) {
         const craftedViewPill = document.createElement('span');
         craftedViewPill.className = 'pill';
-        craftedViewPill.textContent = 'Showing crafted recipes only';
+        craftedViewPill.textContent = state.currentMode === 'inventory'
+          ? 'Showing crafted recipes only (inventory mode)'
+          : 'Showing crafted recipes only';
 
         const resetLink = document.createElement('a');
         resetLink.className = 'pill-link';
@@ -1147,29 +1876,9 @@
         tierBadge.className = 'pill';
         tierBadge.textContent = 'Tier ' + (recipe.tier ?? '?');
 
-        const craftedLabel = document.createElement('label');
-        craftedLabel.className = 'crafted-toggle';
-
-        const craftedCheckbox = document.createElement('input');
-        craftedCheckbox.type = 'checkbox';
-        craftedCheckbox.checked = recipeCrafted;
-        craftedCheckbox.addEventListener('change', () => {
-          if (craftedCheckbox.checked) {
-            state.craftedRecipes.add(recipe.name);
-          } else {
-            state.craftedRecipes.delete(recipe.name);
-          }
-          saveCraftedRecipes();
-          runSearch();
-        });
-
-        const craftedText = document.createElement('span');
-        craftedText.textContent = 'Crafted';
-
-        craftedLabel.appendChild(craftedCheckbox);
-        craftedLabel.appendChild(craftedText);
+        const craftedAction = buildCraftActionElement(recipe, recipeCrafted);
         actions.appendChild(tierBadge);
-        actions.appendChild(craftedLabel);
+        actions.appendChild(craftedAction);
 
         header.appendChild(main);
         header.appendChild(actions);
@@ -1217,14 +1926,14 @@
         return;
       }
 
-      const rawValue = searchInput.value.trim();
+      const rawValue = state.currentMode === 'inventory' ? '' : searchInput.value.trim();
       const query = normalize(rawValue);
       if (rawValue) {
         addSearchToHistory(rawValue);
       }
       let matches = [...state.recipes];
 
-      if (query) {
+      if (state.currentMode === 'normal' && query) {
         matches = matches.filter(recipe =>
           recipe.ingredients.some(ingredient => normalize(ingredient).includes(query))
         );
@@ -1234,7 +1943,15 @@
         matches = matches.filter(recipe => state.craftedRecipes.has(recipe.name));
       }
 
-      state.filtered = sortRecipes(matches, sortMode.value, query);
+      if (state.currentMode === 'inventory' && !state.craftedViewOnly) {
+        matches = matches.filter(recipe => !state.craftedRecipes.has(recipe.name));
+      }
+
+      if (state.currentMode === 'inventory' && state.inventoryFilterEnabled && !state.craftedViewOnly) {
+        matches = matches.filter(recipe => recipeCraftableWithInventory(recipe));
+      }
+
+      state.filtered = sortRecipes(matches, currentSortModeValue(), query);
       setStatus('Loaded ' + state.recipes.length + ' recipes with ingredients.', 'empty');
       renderResults();
     }
@@ -1242,10 +1959,13 @@
     function clearSearch() {
       searchInput.value = '';
       partnerTierFilter.value = 'all';
+      sortMode.value = 'tier-asc';
+      inventorySortMode.value = 'tier-asc';
       state.craftedViewOnly = false;
+      state.inventoryFilterEnabled = state.currentMode === 'inventory';
 
       if (state.rawData) {
-        state.filtered = sortRecipes([...state.recipes], sortMode.value, '');
+        state.filtered = sortRecipes([...state.recipes], currentSortModeValue(), '');
         setStatus('Loaded ' + state.recipes.length + ' recipes with ingredients.', 'empty');
       } else {
         state.filtered = [];
@@ -1263,6 +1983,8 @@
       state.tierMap = buildTierMap(parsed);
       state.recipes = usable;
       state.filtered = sortRecipes([...usable], sortMode.value, '');
+      populateItemDatalist();
+      renderInventoryList();
 
       setStatus('Loaded ' + usable.length + ' usable recipes from ' + sourceLabel + '.', 'empty');
       renderResults();
@@ -1287,27 +2009,63 @@
       }
     }
 
+    normalModeTab.addEventListener('click', () => setMode('normal'));
+    inventoryModeTab.addEventListener('click', () => setMode('inventory'));
+
     searchBtn.addEventListener('click', () => {
       state.craftedViewOnly = false;
+      setMode('normal');
       runSearch();
       hideSearchHistory();
     });
     clearBtn.addEventListener('click', () => {
+      setMode('normal');
       clearSearch();
       hideSearchHistory();
     });
+    addInventoryBtn.addEventListener('click', () => {
+      setMode('inventory');
+      addOrUpdateInventoryItem();
+    });
+    clearInventoryBtn.addEventListener('click', clearInventory);
+    openInventoryModalBtn.addEventListener('click', openInventoryModal);
+    closeInventoryModalBtn.addEventListener('click', closeInventoryModal);
+    inventoryModalOverlay.addEventListener('click', (e) => {
+      if (e.target === inventoryModalOverlay) closeInventoryModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !inventoryModalOverlay.classList.contains('hidden')) {
+        closeInventoryModal();
+      }
+    });
+    inventoryItemInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        setMode('inventory');
+        addOrUpdateInventoryItem();
+      }
+    });
+    inventoryQtyInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        setMode('inventory');
+        addOrUpdateInventoryItem();
+      }
+    });
     clearHistoryBtn.addEventListener('click', clearSearchHistory);
-    sortMode.addEventListener('change', runSearch);
-    partnerTierFilter.addEventListener('change', runSearch);
+    sortMode.addEventListener('change', () => { if (state.currentMode === 'normal') runSearch(); });
+    partnerTierFilter.addEventListener('change', () => { if (state.currentMode === 'normal') runSearch(); });
+    inventorySortMode.addEventListener('change', () => { if (state.currentMode === 'inventory') runSearch(); });
     searchInput.addEventListener('focus', () => {
-      showSearchHistory();
+      if (state.currentMode === 'normal') showSearchHistory();
     });
     searchInput.addEventListener('input', () => {
-      showSearchHistory();
+      if (state.currentMode === 'normal') showSearchHistory();
     });
     searchInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         state.craftedViewOnly = false;
+        setMode('normal');
         runSearch();
         hideSearchHistory();
       } else if (e.key === 'Escape') {
@@ -1324,7 +2082,10 @@
 
     loadCraftedRecipes();
     loadSearchHistory();
+    loadInventory();
     renderSearchHistory();
+    renderInventoryList();
+    setMode('normal');
     renderResults();
     autoLoadJson();
   </script>
