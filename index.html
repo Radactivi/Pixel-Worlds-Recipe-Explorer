@@ -1192,6 +1192,21 @@
         note.className = 'inventory-item-note';
         note.textContent = info.noteText;
 
+        const incrementBtn = document.createElement('button');
+        incrementBtn.type = 'button';
+        incrementBtn.className = 'inventory-remove';
+        incrementBtn.textContent = '+';
+        incrementBtn.addEventListener('click', () => {
+          const inputQty = parseInt(inventoryQtyInput.value, 10);
+          const addAmount = Number.isFinite(inputQty) && inputQty > 0 ? inputQty : 1;
+
+          state.inventory[name] = (state.inventory[name] || 0) + addAmount;
+
+          saveInventory();
+          renderInventoryList();
+          runSearch();
+        });
+
         const removeBtn = document.createElement('button');
         removeBtn.type = 'button';
         removeBtn.className = 'inventory-remove';
