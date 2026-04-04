@@ -190,16 +190,27 @@
       text-decoration: none;
     }
     .inventory-controls {
-      display: grid;
-      grid-template-columns: 1fr 92px;
-      gap: 8px;
+      display: block;
       margin-bottom: 8px;
     }
     .inventory-actions {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
+      align-items: center;
       margin-top: 8px;
+    }
+    .inventory-qty-inline {
+      width: 92px;
+      flex: 0 0 92px;
+      margin: 0;
+    }
+    .inventory-popup-status {
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+    .hidden {
+      display: none !important;
     }
     .inventory-summary {
       display: grid;
@@ -710,13 +721,14 @@
                 <label for="inventoryItemInput">Add ingredients</label>
                 <div class="inventory-controls">
                   <input id="inventoryItemInput" type="text" placeholder="Example: Soil Block" list="allItemsDatalist" autocomplete="off" />
-                  <input id="inventoryQtyInput" type="text" inputmode="numeric" placeholder="Qty" value="1" />
                 </div>
                 <div class="inventory-actions">
+                  <input id="inventoryQtyInput" class="inventory-qty-inline" type="text" inputmode="numeric" placeholder="Qty" value="1" />
                   <button id="addInventoryBtn" type="button" class="secondary">Add / Update</button>
                   <button id="incrementInventoryBtn" type="button" class="secondary">Increment</button>
                   <button id="clearInventoryBtn" type="button" class="secondary">Clear ingredients</button>
                 </div>
+                <div id="inventoryPopupStatus" class="empty inventory-popup-status hidden"></div>
               </div>
               <div id="inventorySummary" class="inventory-summary"></div>
               <div id="inventoryList" class="inventory-list"></div>
@@ -897,6 +909,7 @@
     const closeInventoryModalBtn = document.getElementById('closeInventoryModalBtn');
     const inventoryModalOverlay = document.getElementById('inventoryModalOverlay');
     const inventorySummaryEl = document.getElementById('inventorySummary');
+    const inventoryPopupStatusEl = document.getElementById('inventoryPopupStatus');
     const inventoryListEl = document.getElementById('inventoryList');
     const allItemsDatalist = document.getElementById('allItemsDatalist');
     const searchBtn = document.getElementById('searchBtn');
@@ -916,6 +929,13 @@
     function setStatus(message, type = 'empty') {
       statusEl.className = type;
       statusEl.textContent = message;
+
+      if (inventoryPopupStatusEl) {
+        const inventoryModeActive = state.currentMode === 'inventory';
+        const hasMessage = Boolean(message);
+        inventoryPopupStatusEl.className = type + ' inventory-popup-status' + (inventoryModeActive && hasMessage ? '' : ' hidden');
+        inventoryPopupStatusEl.textContent = inventoryModeActive && hasMessage ? message : '';
+      }
     }
 
     function updateStats() {
@@ -949,6 +969,7 @@
       state.inventoryFilterEnabled = inventoryActive;
 
       saveInventory();
+      setStatus(statusEl.textContent || '', statusEl.className || 'empty');
       runSearch();
     }
 
@@ -956,6 +977,7 @@
       disarmClearInventoryButton();
       inventoryModalOverlay.classList.remove('hidden');
       inventoryModalOverlay.setAttribute('aria-hidden', 'false');
+      setStatus(statusEl.textContent || '', statusEl.className || 'empty');
       requestAnimationFrame(() => inventoryItemInput.focus());
     }
 
@@ -1574,10 +1596,12 @@
     }
 
     function getMatchingAndOtherIngredients(recipe, searchQuery) {
-      const matchingIngredients = recipe.ingredients.filter(
-        ingredient => normalize(ingredient).includes(searchQuery)
+      const ingredients = Array.isArray(recipe?.ingredients) ? recipe.ingredients : [];
+      const normalizedQuery = normalize(searchQuery);
+      const matchingIngredients = ingredients.filter(
+        ingredient => normalize(ingredient).includes(normalizedQuery)
       );
-      const otherIngredients = recipe.ingredients.filter(
+      const otherIngredients = ingredients.filter(
         ingredient => !matchingIngredients.includes(ingredient)
       );
       return { matchingIngredients, otherIngredients };
