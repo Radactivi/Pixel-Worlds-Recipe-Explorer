@@ -948,6 +948,30 @@
       return String(value || '').trim().toLowerCase();
     }
 
+    function isValidInventoryItemName(value) {
+      const normalizedValue = normalize(value);
+      if (!normalizedValue) return false;
+
+      if (allItemsDatalist) {
+        const options = Array.from(allItemsDatalist.options || []);
+        if (options.some(option => normalize(option.value) === normalizedValue)) {
+          return true;
+        }
+      }
+
+      if (Array.isArray(state.recipes)) {
+        for (const recipe of state.recipes) {
+          if (normalize(recipe?.item) === normalizedValue) return true;
+          const ingredients = Array.isArray(recipe?.ingredients) ? recipe.ingredients : [];
+          if (ingredients.some(ingredient => normalize(ingredient) === normalizedValue)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
     function currentSortModeValue() {
       return state.currentMode === 'inventory' ? inventorySortMode.value : sortMode.value;
     }
@@ -1317,6 +1341,11 @@
 
       if (!itemName) {
         setStatus('Enter an ingredient name first.', 'error');
+        return;
+      }
+
+      if (!isValidInventoryItemName(itemName)) {
+        setStatus('That is not a valid ingredient or item name.', 'error');
         return;
       }
 
