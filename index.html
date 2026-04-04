@@ -972,6 +972,22 @@
       return false;
     }
 
+    function enableAutoSelectOnClick(input) {
+      if (!input) return;
+
+      input.addEventListener('focus', () => {
+        requestAnimationFrame(() => {
+          try { input.select(); } catch (error) {}
+        });
+      });
+
+      input.addEventListener('click', () => {
+        requestAnimationFrame(() => {
+          try { input.select(); } catch (error) {}
+        });
+      });
+    }
+
     function currentSortModeValue() {
       return state.currentMode === 'inventory' ? inventorySortMode.value : sortMode.value;
     }
@@ -1365,6 +1381,10 @@
 
       if (!itemName) {
         setStatus('Enter an ingredient name first.', 'error');
+        return;
+      }
+      if (!isValidInventoryItemName(itemName)) {
+        setStatus('That is not a valid ingredient or item name.', 'error');
         return;
       }
       if (!Number.isFinite(qty) || qty < 1) {
@@ -2206,6 +2226,10 @@
         hideSearchHistory();
       }
     });
+
+    enableAutoSelectOnClick(searchInput);
+    enableAutoSelectOnClick(inventoryItemInput);
+    enableAutoSelectOnClick(inventoryQtyInput);
 
     loadCraftedRecipes();
     loadSearchHistory();
